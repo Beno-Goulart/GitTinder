@@ -13,7 +13,7 @@ interface Props {
 }
 
 const exampleClass =
-  "cursor-pointer font-mono text-ink-soft underline decoration-[#ff3d7f]/40 underline-offset-[3px] transition hover:text-[#ff6fb2]";
+  "cursor-pointer font-mono text-ink-soft underline decoration-brand/40 underline-offset-[3px] transition hover:text-brand";
 
 export default function ScoutForm({ loading, error, scoutCount, onScout }: Props) {
   const [name, setName] = useState("");
@@ -27,17 +27,17 @@ export default function ScoutForm({ loading, error, scoutCount, onScout }: Props
     <div className="min-w-0 flex-1">
       {/* the brand face — a beating heart where the mascot used to be */}
       <div className="mb-3 flex items-center gap-3 max-[860px]:justify-center">
-        <HeartHandshake size={30} strokeWidth={2} className="text-[#ff3d7f]" />
+        <HeartHandshake size={30} strokeWidth={2} className="text-brand" />
         <span className="font-display text-[17px] tracking-[.1em] text-ink-soft">
           GITTINDER
         </span>
       </div>
 
-      <div className="mb-[18px] inline-flex items-center gap-[9px] rounded-[8px] border border-white/[0.08] bg-white/[0.025] px-[12px] py-[6px] max-[860px]:mx-auto">
+      <div className="mb-[18px] inline-flex items-center gap-[9px] rounded-[8px] border border-line bg-surface/60 px-[12px] py-[6px] max-[860px]:mx-auto">
         <span className="font-mono text-[10.5px] font-semibold tracking-[.18em] text-ink-soft">
           GITHUB
         </span>
-        <span className="font-display mt-[1px] text-[15px] leading-none text-[#ff3d7f]">×</span>
+        <span className="font-display mt-[1px] text-[15px] leading-none text-brand">×</span>
         <span className="font-display text-[15px] leading-none tracking-[.06em] text-ink">
           TINDER
         </span>
@@ -56,7 +56,7 @@ export default function ScoutForm({ loading, error, scoutCount, onScout }: Props
         className="m-0 flex max-w-[460px] flex-wrap gap-[10px] max-[860px]:mx-auto"
       >
         <div className="relative min-w-[200px] flex-1">
-          <span className="font-mono pointer-events-none absolute left-[18px] top-1/2 -translate-y-1/2 text-[17px] font-semibold text-[#ff3d7f]/70">
+          <span className="font-mono pointer-events-none absolute left-[18px] top-1/2 -translate-y-1/2 text-[17px] font-semibold text-brand/70">
             @
           </span>
           <input
@@ -66,7 +66,7 @@ export default function ScoutForm({ loading, error, scoutCount, onScout }: Props
             autoComplete="off"
             spellCheck={false}
             aria-label="GitHub username"
-            className="font-mono h-14 w-full rounded-[14px] border-[1.5px] border-line bg-surface/70 pl-[34px] pr-5 text-[16px] font-medium text-white outline-none backdrop-blur-[4px] transition focus:border-[#ff3d7f] focus:bg-surface focus:shadow-[0_0_0_4px_rgba(255,61,127,.16),0_0_42px_rgba(255,61,127,.24)]"
+            className="font-mono h-14 w-full rounded-[14px] border-[1.5px] border-line bg-surface/70 pl-[34px] pr-5 text-[16px] font-medium text-ink outline-none backdrop-blur-[4px] transition focus:border-brand focus:bg-surface focus:shadow-[0_0_0_4px_rgba(255,70,85,.14),0_0_42px_rgba(255,70,85,.18)]"
           />
         </div>
         <button
@@ -88,7 +88,7 @@ export default function ScoutForm({ loading, error, scoutCount, onScout }: Props
       {error && (
         <div
           role="alert"
-          className="mt-[13px] max-w-[460px] rounded-[10px] border border-[#f85149]/30 bg-[#f85149]/10 px-[13px] py-[10px] text-[13.5px] font-medium text-[#ff9d96]"
+          className="mt-[13px] max-w-[460px] rounded-[10px] border border-[#d02a35]/30 bg-[#d02a35]/10 px-[13px] py-[10px] text-[13.5px] font-medium text-[#b3262f]"
         >
           {error}
         </div>
@@ -111,8 +111,8 @@ export default function ScoutForm({ loading, error, scoutCount, onScout }: Props
         {scoutCount != null && (
           <span className="inline-flex items-baseline gap-[9px]">
             <span className="relative flex h-[7px] w-[7px] translate-y-[-1px] self-center" aria-hidden>
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff3d7f] opacity-60" />
-              <span className="relative inline-flex h-[7px] w-[7px] rounded-full bg-[#ff3d7f]" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-60" />
+              <span className="relative inline-flex h-[7px] w-[7px] rounded-full bg-brand" />
             </span>
             <span className="font-display relative text-[20px] leading-none tabular-nums text-ink">
               {scoutCount.toLocaleString("en-US")}

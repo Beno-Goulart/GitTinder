@@ -140,7 +140,7 @@ export default function SwipeDeck({
                   setQueue(profiles);
                   setVerdicts([]);
                 }}
-                className="font-display cursor-pointer text-[13px] tracking-[.16em] text-[#ff6fb2] hover:text-[#ff3d7f]"
+                className="font-display cursor-pointer text-[13px] tracking-[.16em] text-brand hover:text-brand-deep"
               >
                 SHUFFLE AGAIN
               </button>

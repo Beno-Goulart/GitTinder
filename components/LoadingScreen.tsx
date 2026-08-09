@@ -17,17 +17,17 @@ export default function LoadingScreen({ login }: { login?: string }) {
   return (
     <main className="relative z-[2] flex h-[100dvh] flex-col items-center justify-center px-6 text-center">
       <div className="relative">
-        <div className="absolute inset-0 -m-8 rounded-full bg-[#ff3d7f]/25 blur-2xl" />
+        <div className="absolute inset-0 -m-8 rounded-full bg-brand/20 blur-2xl" />
         <Heart
           size={120}
           strokeWidth={1.6}
-          className="relative animate-heartbeat fill-[#ff3d7f] text-[#ff3d7f]"
+          className="relative animate-heartbeat fill-brand text-brand"
         />
       </div>
 
       <div className="font-display mt-8 text-[clamp(30px,5vw,52px)] leading-none tracking-[.02em] text-ink">
         MATCHING{" "}
-        {login && <span className="font-mono align-middle text-[0.5em] text-[#ff6fb2]">@{login}</span>}
+        {login && <span className="font-mono align-middle text-[0.5em] text-brand">@{login}</span>}
       </div>
 
       {/* rotating pun line */}
@@ -40,9 +40,9 @@ export default function LoadingScreen({ login }: { login?: string }) {
       </p>
 
       {/* indeterminate progress sliver */}
-      <div className="mt-7 h-[3px] w-[min(260px,70vw)] overflow-hidden rounded-full bg-white/10">
+      <div className="mt-7 h-[3px] w-[min(260px,70vw)] overflow-hidden rounded-full bg-ink/[0.08]">
         <div
-          className="h-full w-1/3 rounded-full bg-gradient-to-r from-transparent via-[#ff3d7f] to-transparent"
+          className="h-full w-1/3 rounded-full bg-gradient-to-r from-transparent via-brand to-transparent"
           style={{ animation: "gt-load 1.3s ease-in-out infinite" }}
         />
       </div>

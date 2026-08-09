@@ -22,7 +22,7 @@ export const CARD_SIZE = { width: EMBED_W, height: cardH(EMBED_W) }; // 810×113
 const AVATAR_FALLBACK =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320"><rect width="320" height="320" fill="%230d0717"/><circle cx="160" cy="132" r="58" fill="%233d3550"/><rect x="70" y="212" width="180" height="140" rx="72" fill="%233d3550"/></svg>',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320"><rect width="320" height="320" fill="%23e8dfcd"/><circle cx="160" cy="132" r="58" fill="%23cfc4a8"/><rect x="70" y="212" width="180" height="140" rx="72" fill="%23cfc4a8"/></svg>',
   );
 
 async function fetchBytes(url: string): Promise<{ buf: Buffer; mime: string } | null> {
@@ -85,8 +85,11 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
   ].join(" · ");
   const at = (left: number, top: number) => ({ position: "absolute" as const, left: `${left}%`, top: `${top}%` });
 
+  const PAPER = "#fffdf8";
+  const INK = "#191521";
+
   return (
-    <div style={{ width: w, height: H, display: "flex", position: "relative", background: "#0d0717", fontFamily: "DINPro", overflow: "hidden", borderRadius: cqw(7) }}>
+    <div style={{ width: w, height: H, display: "flex", position: "relative", background: PAPER, fontFamily: "DINPro", overflow: "hidden", borderRadius: cqw(7) }}>
       {/* photo — full-bleed top */}
       <img
         alt=""
@@ -96,7 +99,7 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
         style={{ position: "absolute", left: 0, top: 0, width: w, height: `${62}%`, objectFit: "cover", objectPosition: "50% 18%" }}
       />
 
-      {/* gradient plate */}
+      {/* paper plate — text zone fades to white over the photo */}
       <div
         style={{
           position: "absolute",
@@ -105,14 +108,26 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
           width: w,
           height: `${72}%`,
           backgroundImage:
-            "linear-gradient(to top, #0d0717 0%, rgba(13,7,23,.96) 34%, rgba(13,7,23,.86) 52%, rgba(13,7,23,0) 100%)",
+            "linear-gradient(to top, #fffdf8 0%, rgba(255,253,248,.98) 34%, rgba(255,253,248,.92) 52%, rgba(255,253,248,0) 100%)",
         }}
       />
 
-      {/* match score — top left */}
-      <div style={{ ...at(6, 5), display: "flex", flexDirection: "column" }}>
-        <div style={{ display: "flex", fontFamily: "Bebas", fontSize: cqw(11.5), lineHeight: 1, color: "#ffffff" }}>{profile.match}</div>
-        <div style={{ fontFamily: "DINPro", fontWeight: 600, fontSize: cqw(3), letterSpacing: cqw(0.28), color: "#ffffff", opacity: 0.9 }}>
+      {/* match score — coral seal, top left */}
+      <div
+        style={{
+          ...at(5, 4.6),
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          width: cqw(14.5),
+          height: cqw(14.5),
+          borderRadius: "50%",
+          backgroundImage: "linear-gradient(180deg, #ff7a85 0%, #ff4655 100%)",
+        }}
+      >
+        <div style={{ display: "flex", fontFamily: "Bebas", fontSize: cqw(7.4), lineHeight: 1, color: "#ffffff" }}>{profile.match}</div>
+        <div style={{ fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(2.2), letterSpacing: cqw(0.2), color: "#ffffff", opacity: 0.92 }}>
           MATCH
         </div>
       </div>
@@ -126,13 +141,13 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
           display: "flex",
           padding: `${cqw(1.1)}px ${cqw(2.6)}px`,
           borderRadius: cqw(4),
-          border: `1px solid ${rgba(t.accent, 0.9)}`,
-          backgroundColor: rgba(t.accent, 0.22),
+          border: `1px solid ${rgba(t.accent, 0.65)}`,
+          backgroundColor: "rgba(255,253,248,.88)",
           fontFamily: "DINPro",
           fontWeight: 700,
           fontSize: cqw(2.9),
           letterSpacing: cqw(0.2),
-          color: "#ffffff",
+          color: t.accent,
           whiteSpace: "nowrap",
         }}
       >
@@ -141,7 +156,7 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
 
       {/* name + age */}
       <div style={{ ...at(6.2, 57), display: "flex", alignItems: "center", width: `${88}%` }}>
-        <div style={{ display: "flex", alignItems: "baseline", fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(8.8), lineHeight: 1, color: "#ffffff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>
+        <div style={{ display: "flex", alignItems: "baseline", fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(8.8), lineHeight: 1, color: INK, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>
           {displayName}, {profile.age}
         </div>
         {profile.verified && (
@@ -150,12 +165,12 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
       </div>
 
       {/* meta row */}
-      <div style={{ ...at(6.3, 65.5), width: `${88}%`, fontFamily: "DINPro", fontWeight: 500, fontSize: cqw(3.5), color: "rgba(255,255,255,.92)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+      <div style={{ ...at(6.3, 65.5), width: `${88}%`, fontFamily: "DINPro", fontWeight: 500, fontSize: cqw(3.5), color: "rgba(25,21,33,.7)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
         {metaBits}
       </div>
 
       {/* bio — clipped to the three-line zone */}
-      <div style={{ ...at(6.3, 69.6), width: `${87.4}%`, height: cqw(16.5), overflow: "hidden", fontFamily: "DINPro", fontSize: cqw(4), lineHeight: 1.34, color: "rgba(255,255,255,.96)" }}>
+      <div style={{ ...at(6.3, 69.6), width: `${87.4}%`, height: cqw(16.5), overflow: "hidden", fontFamily: "DINPro", fontSize: cqw(4), lineHeight: 1.34, color: "rgba(25,21,33,.84)" }}>
         {profile.bio.slice(0, 3).join(" ")}
       </div>
 
@@ -164,7 +179,7 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
         {profile.interests.slice(0, 3).map((lang, i) => (
           <div
             key={lang}
-            style={{ display: "flex", alignItems: "center", gap: cqw(1.1), padding: `${cqw(1.1)}px ${cqw(2.4)}px ${cqw(1.1)}px ${cqw(1.6)}px`, borderRadius: cqw(4), backgroundColor: t.chipBg, fontFamily: "DINPro", fontWeight: 600, fontSize: cqw(3), color: "#ffffff", whiteSpace: "nowrap" }}
+            style={{ display: "flex", alignItems: "center", gap: cqw(1.1), padding: `${cqw(1.1)}px ${cqw(2.4)}px ${cqw(1.1)}px ${cqw(1.6)}px`, borderRadius: cqw(4), backgroundColor: t.chipBg, fontFamily: "DINPro", fontWeight: 600, fontSize: cqw(3), color: "#5d5468", whiteSpace: "nowrap" }}
           >
             {assets.logos[i] && (
               <img alt="" src={assets.logos[i] as string} style={{ width: cqw(3.6), height: cqw(3.6), objectFit: "contain" }} />
@@ -175,10 +190,10 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
       </div>
 
       {/* signature — maker's mark + handle */}
-      <div style={{ ...at(6.3, 95), fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(3), letterSpacing: cqw(0.26), color: "#ffffff", opacity: 0.72 }}>
+      <div style={{ ...at(6.3, 95), fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(3), letterSpacing: cqw(0.26), color: INK, opacity: 0.5 }}>
         GITTINDER.COM
       </div>
-      <div style={{ position: "absolute", right: `${6}%`, top: `${95}%`, display: "flex", fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(3), letterSpacing: cqw(0.1), color: "#ffffff", opacity: 0.72 }}>
+      <div style={{ position: "absolute", right: `${6}%`, top: `${95}%`, display: "flex", fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(3), letterSpacing: cqw(0.1), color: INK, opacity: 0.5 }}>
         @{profile.login}
       </div>
     </div>

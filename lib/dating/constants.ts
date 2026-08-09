@@ -74,14 +74,14 @@ export function tierFor(match: number): { tier: Tier; label: string } {
 }
 
 // Accent colour per tier — drives the card's tier pill, glow, radar and the
-// whole report tint. Vibrant, Tinder-flavoured.
+// whole report tint. Deep enough to hold up on the paper-white surfaces.
 export const TIER_ACCENT: Record<Tier, string> = {
-  red: "#fb5c66",
-  green: "#34d87b",
-  keeper: "#ffb02e",
-  catch: "#ff6fb2",
-  turner: "#ff3d7f",
-  one: "#ffd166",
+  red: "#e5484d",
+  green: "#25a86f",
+  keeper: "#e8922a",
+  catch: "#e24f93",
+  turner: "#ff4655",
+  one: "#d4932e",
 };
 
 // The "repo height" gag: total stars (log-scaled) mapped onto a dating-profile

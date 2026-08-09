@@ -68,8 +68,8 @@ export default function MatchOverlay({
           <div
             className="relative z-10 flex h-[110px] w-[110px] items-center justify-center rounded-full"
             style={{
-              background: "radial-gradient(circle at 30% 20%, #ff77a6, #ff3d7f)",
-              boxShadow: "0 0 60px rgba(255,61,127,.65)",
+              background: "radial-gradient(circle at 30% 20%, #ff7a85, #ff4655)",
+              boxShadow: "0 0 60px rgba(255,70,85,.55)",
               transform: "translateY(-8px)",
             }}
           >

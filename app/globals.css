@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ============================================================
-   GitTinder Design System — plum midnight × Tinder flame
+   GitTinder Design System — paper & ink × Tinder flame
    The keystone module: every screen reads from these tokens.
    ============================================================ */
 @theme {
@@ -9,32 +9,32 @@
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains);
 
-  /* plum midnight — dating-app darkness / surfaces / gray / ink / pink */
-  --color-bg: #0d0717;
-  --color-bg-deep: #080311;
-  --color-panel: #14101f;
-  --color-surface: #14101f;
-  --color-surface-2: #1d1527;
-  --color-line: #2a2036;
-  --color-gray: #8b8499;
+  /* paper & ink — warm cream canvas, deep plum-black ink */
+  --color-bg: #f6f1e7;
+  --color-bg-deep: #efe7d6;
+  --color-panel: #fffdf8;
+  --color-surface: #fffdf8;
+  --color-surface-2: #f1e9da;
+  --color-line: #e2d7c0;
+  --color-gray: #9a9080;
 
-  --color-ink: #f2ecf6;
-  --color-ink-dim: #d5ccdd;
-  --color-ink-soft: #b3a7c0;
-  --color-ink-faint: #95889f;
-  --color-ink-mute: #7a6f85;
+  --color-ink: #191521;
+  --color-ink-dim: #443a4e;
+  --color-ink-soft: #5d5468;
+  --color-ink-faint: #776d82;
+  --color-ink-mute: #948a9c;
 
-  /* Tinder flame — "the action" */
-  --color-brand: #ff3d7f;
-  --color-brand-hi: #ff77a6;
-  --color-brand-mid: #e03473;
-  --color-brand-deep: #9c1f4e;
+  /* the flame — "the action" (coral, reads on cream) */
+  --color-brand: #ff4655;
+  --color-brand-hi: #ff7a85;
+  --color-brand-mid: #e03141;
+  --color-brand-deep: #b91c2b;
   --color-brand-warm: #ff7a45;
 
   /* gold — prestige metal (reserved for the highest tiers) */
-  --color-gold: #ffd166;
-  --color-gold-hi: #ffe08a;
-  --color-gold-deep: #d4a940;
+  --color-gold: #e0a32e;
+  --color-gold-hi: #eec468;
+  --color-gold-deep: #b07b14;
 
   /* motion */
   --animate-flood: flood 18s ease-in-out infinite alternate;
@@ -56,7 +56,7 @@
   }
   ::selection {
     background: var(--color-brand);
-    color: #2a0715;
+    color: #fff;
   }
   ::placeholder {
     color: var(--color-ink-mute);
@@ -139,28 +139,28 @@
   }
 }
 
-/* ---- the Tinder flame — the brand gradient behind every primary action ---- */
+/* ---- the flame — the coral gradient behind every primary action ---- */
 .gt-flame {
   background-image: linear-gradient(
     180deg,
-    #ff5c93 0%,
-    #ff3d7f 48%,
+    #ff6b7a 0%,
+    #ff4655 48%,
     #ff7a45 100%
   );
   box-shadow:
     0 0 0 1px rgba(255, 122, 69, 0.32),
-    0 10px 30px rgba(255, 61, 127, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    0 10px 30px rgba(255, 70, 85, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
   transition:
     filter 0.2s ease,
     box-shadow 0.2s ease;
 }
 .gt-flame:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.06);
   box-shadow:
     0 0 0 1px rgba(255, 122, 69, 0.5),
-    0 14px 40px rgba(255, 61, 127, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    0 14px 40px rgba(255, 70, 85, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 .gt-flame:disabled {
   cursor: wait;
@@ -171,8 +171,8 @@
 .gt-flame-text {
   background-image: linear-gradient(
     180deg,
-    #ff8a7a 0%,
-    #ff3d7f 55%,
+    #ff6b7a 0%,
+    #ff4655 55%,
     #ff7a45 100%
   );
   -webkit-background-clip: text;

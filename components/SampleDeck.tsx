@@ -86,12 +86,12 @@ export default function SampleDeck({ cards, onPick }: Props) {
         aria-hidden
         className="pointer-events-none absolute inset-0 flex items-center justify-center max-[860px]:hidden"
       >
-        <div className="absolute aspect-square w-[min(330px,76%)] rounded-full border border-white/[0.06]" />
+        <div className="absolute aspect-square w-[min(330px,76%)] rounded-full border border-ink/[0.07]" />
         <div
           className="font-display font-black leading-[.8] text-transparent"
           style={{
             fontSize: "clamp(170px,22vw,300px)",
-            WebkitTextStroke: "1.4px rgba(255,255,255,.045)",
+            WebkitTextStroke: "1.4px rgba(25,21,33,.06)",
           }}
         >
           %%
@@ -114,10 +114,10 @@ export default function SampleDeck({ cards, onPick }: Props) {
           const filter = hovered
             ? "none"
             : open
-              ? "saturate(.5) brightness(.82)"
+              ? "saturate(.5) brightness(.85)"
               : mag === 0
                 ? "none"
-                : "saturate(.75) brightness(.94)";
+                : "saturate(.8) brightness(.95)";
           return (
             <div
               key={card.login}

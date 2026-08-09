@@ -40,7 +40,7 @@ function NotScouted({ username, error }: { username: string; error: GithubError 
         : error.message;
   return (
     <main className="relative z-[2] mx-auto flex min-h-screen max-w-[560px] flex-col items-center justify-center px-6 text-center">
-      <div className="font-display text-[12px] font-bold tracking-[.3em] text-[#ff3d7f]">GITTINDER</div>
+      <div className="font-display text-[12px] font-bold tracking-[.3em] text-brand">GITTINDER</div>
       <h1 className="font-display mt-3 text-[clamp(30px,6vw,48px)] font-black leading-[.95]">{heading}</h1>
       <p className="mt-3 text-[15.5px] leading-[1.5] text-ink-soft">{message}</p>
       <Link

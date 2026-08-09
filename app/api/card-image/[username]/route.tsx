@@ -34,18 +34,18 @@ async function fallback(username: string) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0d0717",
-          backgroundImage: "radial-gradient(60% 40% at 50% 32%, rgba(255,61,127,0.18), transparent 72%)",
-          color: "#e6edf3",
+          background: "#f6f1e7",
+          backgroundImage: "radial-gradient(60% 40% at 50% 32%, rgba(255,70,85,0.16), transparent 72%)",
+          color: "#191521",
           fontFamily: "DINPro",
           padding: 64,
           textAlign: "center",
         }}
       >
-        <div style={{ display: "flex", color: "#ff3d7f", fontSize: 34, fontWeight: 700, letterSpacing: 6 }}>GITTINDER</div>
+        <div style={{ display: "flex", color: "#ff4655", fontSize: 34, fontWeight: 700, letterSpacing: 6 }}>GITTINDER</div>
         <div style={{ display: "flex", fontSize: 56, fontWeight: 700, marginTop: 24 }}>@{username}</div>
-        <div style={{ display: "flex", fontSize: 30, color: "#a8b3bd", marginTop: 22 }}>get this profile matched at</div>
-        <div style={{ display: "flex", marginTop: 10, fontSize: 32, color: "#ff3d7f", fontWeight: 700 }}>gittinder.com</div>
+        <div style={{ display: "flex", fontSize: 30, color: "#5d5468", marginTop: 22 }}>get this profile matched at</div>
+        <div style={{ display: "flex", marginTop: 10, fontSize: 32, color: "#ff4655", fontWeight: 700 }}>gittinder.com</div>
       </div>
     ),
     { width: W, height: H, fonts, headers: { "Cache-Control": "public, max-age=300" } },

@@ -10,7 +10,7 @@ export default function FooterCredit() {
       />
       <div className="relative flex flex-wrap items-center justify-center gap-x-[clamp(3px,1.4vw,6px)] gap-y-[4px] text-[length:clamp(9px,2.7vw,13.5px)] font-semibold leading-none text-ink-soft">
         <span className="text-ink-mute">Made with</span>
-        <span className="text-[#ff3d7f]">♥</span>
+        <span className="text-brand">♥</span>
         <span className="text-ink-mute">from GitHub profiles ·</span>
         <span className="text-ink-dim">not a real dating app — your commits are.</span>
       </div>

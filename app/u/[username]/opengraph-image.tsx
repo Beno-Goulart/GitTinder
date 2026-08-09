@@ -33,18 +33,18 @@ export default async function Image({ params }: { params: Promise<{ username: st
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            background: "#0d0717",
-            backgroundImage: "radial-gradient(60% 40% at 50% 32%, rgba(255,61,127,0.18), transparent 72%)",
-            color: "#e6edf3",
+            background: "#f6f1e7",
+            backgroundImage: "radial-gradient(60% 40% at 50% 32%, rgba(255,70,85,0.16), transparent 72%)",
+            color: "#191521",
             fontFamily: "DINPro",
             textAlign: "center",
             padding: 64,
           }}
         >
-          <div style={{ display: "flex", color: "#ff3d7f", fontSize: 26, fontWeight: 700, letterSpacing: 4 }}>GITHUB × TINDER</div>
+          <div style={{ display: "flex", color: "#ff4655", fontSize: 26, fontWeight: 700, letterSpacing: 4 }}>GITHUB × TINDER</div>
           <div style={{ display: "flex", fontSize: 84, fontWeight: 700, marginTop: 20 }}>@{username}</div>
-          <div style={{ display: "flex", fontSize: 34, color: "#a8b3bd", marginTop: 18 }}>Get your GitHub matched, rated 0–99.</div>
-          <div style={{ display: "flex", fontSize: 30, color: "#ff3d7f", fontWeight: 700, marginTop: 26 }}>gittinder.com</div>
+          <div style={{ display: "flex", fontSize: 34, color: "#5d5468", marginTop: 18 }}>Get your GitHub matched, rated 0–99.</div>
+          <div style={{ display: "flex", fontSize: 30, color: "#ff4655", fontWeight: 700, marginTop: 26 }}>gittinder.com</div>
         </div>
       ),
       { ...CARD_SIZE, fonts, headers: CACHE },

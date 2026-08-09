@@ -24,9 +24,9 @@ export function tierTheme(tier: Tier): ProfileTheme {
   const accent = TIER_ACCENT[tier];
   return {
     accent,
-    glow: rgba(accent, 0.45),
-    chipBg: "rgba(255,255,255,.16)",
-    ring: rgba(accent, 0.9),
+    glow: rgba(accent, 0.32),
+    chipBg: "rgba(255,253,248,.92)",
+    ring: rgba(accent, 0.65),
   };
 }
 

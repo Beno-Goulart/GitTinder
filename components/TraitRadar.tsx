@@ -33,7 +33,7 @@ export default function TraitRadar({
             points={ring}
             fill="none"
             stroke={
-              i === outer ? "rgba(255,255,255,.10)" : "rgba(255,255,255,.05)"
+              i === outer ? "rgba(25,21,33,.12)" : "rgba(25,21,33,.06)"
             }
           />
         ))}

@@ -28,7 +28,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
         <div className="mt-7 flex items-center gap-3">
           <button
             onClick={reset}
-            className="font-display inline-flex h-[46px] items-center rounded-xl bg-gradient-to-b from-[#ff5c93] to-[#ff3d7f] px-6 text-[16px] tracking-[.06em] text-white transition hover:from-[#ff77a6] hover:to-[#ff3d7f]"
+            className="font-display gt-flame inline-flex h-[46px] items-center rounded-xl px-6 text-[16px] tracking-[.06em] text-white"
           >
             TRY AGAIN
           </button>

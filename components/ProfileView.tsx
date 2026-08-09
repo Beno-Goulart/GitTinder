@@ -42,7 +42,7 @@ function Tip({ text, children }: { text: string; children: ReactNode }) {
       {children}
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-2 hidden w-max max-w-[220px] -translate-x-1/2 whitespace-normal rounded-lg border border-white/10 bg-[#17131f] px-3 py-2 text-left text-[12px] font-normal leading-snug text-ink-dim shadow-[0_10px_30px_rgba(0,0,0,.55)] group-hover/tip:block"
+        className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-2 hidden w-max max-w-[220px] -translate-x-1/2 whitespace-normal rounded-lg border border-white/10 bg-[#191521] px-3 py-2 text-left text-[12px] font-normal leading-snug text-[#d5ccdd] shadow-[0_10px_30px_rgba(30,20,10,.35)] group-hover/tip:block"
       >
         {text}
       </span>
@@ -62,7 +62,7 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className={`rounded-2xl border border-white/[0.06] bg-white/[0.02] p-[16px] ${className ?? ""}`}>
+    <section className={`rounded-2xl border border-line bg-surface/60 p-[16px] ${className ?? ""}`}>
       <div className="mb-[8px] flex items-center gap-[9px]">
         <span className="h-[2px] w-[16px] rounded-full" style={{ background: accent }} />
         <h3 className="font-display text-[11px] font-bold tracking-[.22em] text-ink-faint">{title}</h3>
@@ -100,7 +100,7 @@ function MetricBar({ label, value, score, unit, accent, index = 0 }: { label: st
           </span>
         </span>
       </div>
-      <div className="mt-[7px] h-[3px] overflow-hidden rounded-full bg-white/[0.07]">
+      <div className="mt-[7px] h-[3px] overflow-hidden rounded-full bg-ink/[0.07]">
         <div
           className="h-full rounded-full transition-[width] duration-[900ms] ease-out"
           style={{ width: mounted ? `${fill}%` : "0%", background: `linear-gradient(90deg, ${accent}99, ${accent})` }}
@@ -133,7 +133,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
         </Link>
         <a
           href={`/${profile.login}.png`}
-          className="font-display rounded-[10px] border border-line bg-surface/60 px-4 py-2 text-[12px] tracking-[.14em] text-ink-soft transition hover:border-[#ff3d7f]/60 hover:text-[#ff6fb2]"
+          className="font-display rounded-[10px] border border-line bg-surface/60 px-4 py-2 text-[12px] tracking-[.14em] text-ink-soft transition hover:border-brand/60 hover:text-brand"
         >
           SHARE CARD ↗
         </a>
@@ -224,7 +224,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
               href={`https://github.com/${profile.login}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-display rounded-[12px] border border-line px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-white/30 hover:text-ink"
+              className="font-display rounded-[12px] border border-line px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-ink"
             >
               GITHUB ↗
             </a>
@@ -256,7 +256,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
                         {profile.stats[key]}
                       </span>
                     </div>
-                    <div className="mt-[5px] h-[3px] overflow-hidden rounded-full bg-white/[0.07]">
+                    <div className="mt-[5px] h-[3px] overflow-hidden rounded-full bg-ink/[0.07]">
                       <div
                         className="h-full rounded-full"
                         style={{ width: `${Math.max(profile.stats[key], 4)}%`, background: `linear-gradient(90deg, ${t.accent}99, ${t.accent})` }}
@@ -288,7 +288,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
                   </Tip>
                 ))}
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-[14px] py-[10px]">
+              <div className="flex items-center justify-between rounded-xl border border-line bg-surface/60 px-[14px] py-[10px]">
                 <span className="text-[13px] text-ink-dim">Member since</span>
                 <span className="font-display text-[14px] font-bold text-ink-soft">{profile.since}</span>
               </div>
@@ -309,7 +309,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
       <div className="mt-16">
         <div className="mb-[18px] flex items-center justify-between">
           <h2 className="font-display text-[clamp(22px,3.4vw,30px)] tracking-[.02em]">
-            KEEP SWIPING<span className="text-[#ff3d7f]">.</span>
+            KEEP SWIPING<span className="text-brand">.</span>
           </h2>
           <button
             type="button"
@@ -317,7 +317,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
               setLiked(false);
               setPicked([...SAMPLE_PROFILES].sort(() => Math.random() - 0.5));
             }}
-            className="inline-flex cursor-pointer items-center gap-2 text-[12.5px] font-semibold text-ink-soft transition hover:text-[#ff6fb2]"
+            className="inline-flex cursor-pointer items-center gap-2 text-[12.5px] font-semibold text-ink-soft transition hover:text-brand"
           >
             <RefreshCcw size={14} /> reshuffle
           </button>
