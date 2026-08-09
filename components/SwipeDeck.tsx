@@ -162,7 +162,7 @@ export default function SwipeDeck({
         {queue.slice(-4, -1).map((p, i) => (
           <div
             key={p.login}
-            className="absolute inset-0 rounded-[7cqw] border border-line bg-surface/40"
+            className="absolute inset-0 rounded-[10cqw] border border-line bg-surface/40"
             style={{
               transform: `scale(${1 - (i + 1) * 0.035}) translateY(${(i + 1) * 10}px)`,
               opacity: 0.4 - i * 0.1,

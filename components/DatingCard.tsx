@@ -6,6 +6,7 @@ import type { DatingProfile } from "@/lib/dating/types";
 import { profileTheme, rgba } from "@/lib/dating/theme";
 import { logoSlugFor, languageLogoUrl } from "@/lib/github/languages";
 import { cardDisplayName } from "@/lib/text";
+import { CARD_CORNER_RADIUS, roundedCardMaskDataUri } from "@/lib/cardMask";
 
 // The live Tinder-style card — photo up top, bio + interests over a paper
 // plate at the bottom, the match score in a coral seal top-left, tier pill
@@ -28,6 +29,8 @@ const FONT_MEDIUM = "var(--font-din-medium), 'Saira Condensed', sans-serif";
 const PAPER = "#fffdf8";
 const INK = "#191521";
 
+const CARD_MASK = roundedCardMaskDataUri(810, 1134, Math.round(810 * CARD_CORNER_RADIUS));
+
 // An interest chip's language logo, when the language has one in the catalog.
 function interestLogo(name: string): string | null {
   const slug = logoSlugFor(name);
@@ -48,11 +51,15 @@ function DatingCard({ profile }: { profile: DatingProfile }) {
     position: "relative",
     width: "100%",
     aspectRatio: "5 / 7",
-    borderRadius: "7cqw",
+    borderRadius: 0,
     overflow: "hidden",
     background: PAPER,
     border: "1px solid rgba(25,21,33,.08)",
     filter: `drop-shadow(0 7cqw 12cqw rgba(70,50,20,.22)) drop-shadow(0 0 6cqw ${t.glow})`,
+    maskImage: `url("${CARD_MASK}")`,
+    WebkitMaskImage: `url("${CARD_MASK}")`,
+    maskSize: "100% 100%",
+    maskRepeat: "no-repeat",
     userSelect: "none",
     WebkitUserSelect: "none",
     WebkitTouchCallout: "none",

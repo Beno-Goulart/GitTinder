@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { profileTheme, rgba } from "@/lib/dating/theme";
 import { languageLogoUrl, logoSlugFor } from "@/lib/github/languages";
 import { cardDisplayName } from "@/lib/text";
+import { roundedCardMaskDataUri } from "@/lib/cardMask";
 import type { DatingProfile } from "@/lib/dating/types";
 import { loadCardFonts } from "./card";
 
@@ -84,12 +85,14 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
     ...(profile.location ? [profile.location.split(",")[0].trim()] : []),
   ].join(" · ");
   const at = (left: number, top: number) => ({ position: "absolute" as const, left: `${left}%`, top: `${top}%` });
+  const radius = Math.round(cqw(10));
+  const cardMask = roundedCardMaskDataUri(w, H, radius);
 
   const PAPER = "#fffdf8";
   const INK = "#191521";
 
   return (
-    <div style={{ width: w, height: H, display: "flex", position: "relative", background: PAPER, fontFamily: "DINPro", overflow: "hidden", borderRadius: cqw(7) }}>
+    <div style={{ width: w, height: H, display: "flex", position: "relative", background: PAPER, fontFamily: "DINPro", overflow: "hidden", borderRadius: cqw(10), maskImage: `url("${cardMask}")`, WebkitMaskImage: `url("${cardMask}")`, maskSize: "100% 100%", maskRepeat: "no-repeat" }}>
       {/* photo — full-bleed top */}
       <img
         alt=""

@@ -26,7 +26,7 @@ export default function SampleDeck({ cards, onPick }: Props) {
     <div className="relative flex min-w-0 flex-[1.12] items-center justify-center">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-center max-[860px]:hidden"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center max-[1120px]:hidden"
       >
         <div className="absolute aspect-square w-[min(330px,76%)] rounded-full border border-ink/[0.07]" />
         <div
@@ -45,7 +45,7 @@ export default function SampleDeck({ cards, onPick }: Props) {
           setOpen(false);
           setHover(null);
         }}
-        className="relative h-[430px] w-[min(640px,98%)] max-[860px]:flex max-[860px]:h-auto max-[860px]:w-full max-[860px]:flex-col max-[860px]:items-center max-[860px]:gap-[22px]"
+        className="relative h-[430px] w-[min(640px,98%)] max-[1120px]:flex max-[1120px]:h-auto max-[1120px]:w-full max-[1120px]:flex-col max-[1120px]:items-center max-[1120px]:gap-[22px]"
       >
         {cards.map((card, i) => {
           const off = i - center;
@@ -63,7 +63,7 @@ export default function SampleDeck({ cards, onPick }: Props) {
                 setOpen(true);
               }}
               onMouseLeave={() => setHover(null)}
-              className="absolute left-1/2 top-[18px] w-[220px] origin-bottom cursor-pointer transition-transform duration-[450ms] ease-[cubic-bezier(.2,.8,.2,1)] max-[860px]:static max-[860px]:w-[min(260px,66vw)] max-[860px]:!transform-none max-[860px]:!z-auto"
+              className="absolute left-1/2 top-[18px] w-[220px] origin-bottom cursor-pointer transition-transform duration-[450ms] ease-[cubic-bezier(.2,.8,.2,1)] max-[1120px]:static max-[1120px]:w-[min(260px,66vw)] max-[1120px]:!transform-none max-[1120px]:!z-auto"
               style={{
                 transform: `translateX(-50%) translate(${tx}px, ${ty}px) rotate(${rot}deg) scale(${sc})`,
                 zIndex: hovered ? 60 : 40 - i * 5,
