@@ -21,7 +21,7 @@ export default function NotFound() {
           </svg>
         </div>
 
-        <p className="font-display text-[12px] font-bold tracking-[.3em] text-brand">SIGNAL LOST</p>
+        <p className="font-display text-[12px] font-bold tracking-[.3em] text-brand">SWIPED LEFT</p>
 
         <h1 className="font-display mt-2 text-[clamp(72px,16vw,140px)] font-black leading-[.84]">
           NO MATCH
@@ -38,7 +38,7 @@ export default function NotFound() {
         <div className="mt-8 flex flex-col items-center gap-[14px]">
           <Link
             href="/"
-            className="font-display inline-flex h-[46px] items-center rounded-xl bg-gradient-to-b from-[#ff5c93] to-[#ff3d7f] px-7 text-[16px] tracking-[.06em] text-white transition hover:from-[#ff77a6] hover:to-[#ff3d7f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+            className="font-display gt-flame inline-flex h-[46px] items-center rounded-xl px-7 text-[16px] tracking-[.06em] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
           >
             FIND A MATCH
           </Link>

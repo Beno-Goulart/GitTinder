@@ -44,7 +44,7 @@ export default function ScoutForm({ loading, error, scoutCount, onScout }: Props
       </div>
 
       <h1 className="font-display m-0 mb-3 text-[clamp(52px,7vw,100px)] leading-[.82] tracking-[.005em]">
-        FIND YOUR&nbsp;<span className="text-[#ff3d7f]">MATCH</span>.
+        FIND YOUR <span className="gt-flame-text">MATCH</span>.
       </h1>
       <p className="mb-[26px] max-w-[440px] text-[clamp(15px,1.7vw,18px)] font-medium leading-[1.5] text-ink-dim max-[860px]:mx-auto">
         One GitHub username. One dating profile. Rated 0–99, complete with a bio,
@@ -72,7 +72,7 @@ export default function ScoutForm({ loading, error, scoutCount, onScout }: Props
         <button
           type="submit"
           disabled={loading}
-          className="font-display group flex h-14 items-center gap-2 rounded-[14px] bg-gradient-to-b from-[#ff5c93] to-[#ff3d7f] px-7 text-[20px] tracking-[.06em] text-white shadow-[0_0_0_1px_rgba(255,61,127,.4),0_10px_30px_rgba(255,61,127,.3)] transition hover:from-[#ff77a6] hover:to-[#ff3d7f] disabled:cursor-wait disabled:opacity-75"
+          className="font-display gt-flame group flex h-14 items-center gap-2 rounded-[14px] px-7 text-[20px] tracking-[.06em] text-white disabled:cursor-wait disabled:opacity-75"
         >
           {loading ? "MATCHING…" : "MATCH ME"}
           {!loading && (

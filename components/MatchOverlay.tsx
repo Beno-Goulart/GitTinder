@@ -77,7 +77,7 @@ export default function MatchOverlay({
           </div>
         </div>
 
-        <h2 className="font-display mt-2 text-[clamp(52px,9vw,80px)] leading-[.9] tracking-[.01em] text-white">
+        <h2 className="gt-flame-text font-display mt-2 text-[clamp(52px,9vw,80px)] leading-[.9] tracking-[.01em]">
           IT&rsquo;S A MATCH
         </h2>
 
@@ -93,7 +93,7 @@ export default function MatchOverlay({
         <a
           href={`/${profile.login}.png`}
           onClick={onClose}
-          className="font-display mt-6 inline-flex items-center gap-2 rounded-[14px] bg-gradient-to-b from-[#ff5c93] to-[#ff3d7f] px-8 py-3 text-[18px] tracking-[.06em] text-white shadow-[0_0_0_1px_rgba(255,61,127,.4),0_10px_30px_rgba(255,61,127,.3)] transition hover:from-[#ff77a6] hover:to-[#ff3d7f]"
+          className="font-display gt-flame mt-6 inline-flex items-center gap-2 rounded-[14px] px-8 py-3 text-[18px] tracking-[.06em] text-white"
         >
           SHARE THE CARD
         </a>

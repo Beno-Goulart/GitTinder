@@ -13,7 +13,7 @@ const CONTRIB_GRID_SVG = (() => {
       const seed = (r * 7 + c * 13) % 11;
       const lit = seed < 3;
       const attrs = lit
-        ? ` fill="#ff3d7f" class="gf-grid-cell" style="--gf-dur:${2.4 + seed * 0.4}s"`
+        ? ` fill="#ff3d7f" class="gt-grid-cell" style="--gt-dur:${2.4 + seed * 0.4}s"`
         : ` fill="#1d1527"`;
       rects += `<rect x="${c * 16}" y="${r * 16}" width="12" height="12" rx="2.5"${attrs}/>`;
     }

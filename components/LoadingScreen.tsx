@@ -21,7 +21,7 @@ export default function LoadingScreen({ login }: { login?: string }) {
         <Heart
           size={120}
           strokeWidth={1.6}
-          className="relative animate-juggle fill-[#ff3d7f] text-[#ff3d7f]"
+          className="relative animate-heartbeat fill-[#ff3d7f] text-[#ff3d7f]"
         />
       </div>
 
@@ -43,11 +43,11 @@ export default function LoadingScreen({ login }: { login?: string }) {
       <div className="mt-7 h-[3px] w-[min(260px,70vw)] overflow-hidden rounded-full bg-white/10">
         <div
           className="h-full w-1/3 rounded-full bg-gradient-to-r from-transparent via-[#ff3d7f] to-transparent"
-          style={{ animation: "gf-load 1.3s ease-in-out infinite" }}
+          style={{ animation: "gt-load 1.3s ease-in-out infinite" }}
         />
       </div>
 
-      <style>{`@keyframes gf-load{0%{transform:translateX(-120%)}100%{transform:translateX(360%)}}`}</style>
+      <style>{`@keyframes gt-load{0%{transform:translateX(-120%)}100%{transform:translateX(360%)}}`}</style>
     </main>
   );
 }

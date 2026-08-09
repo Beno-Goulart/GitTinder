@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { formatCount, round1, round2 } from "@/lib/format";
 
-// formatCount feeds the card, the scout report and the duel bars, so the exact
+// formatCount feeds the card, the scout report and the scoring metrics, so the
+// exact
 // strings matter: they have to stay short enough for the fixed-width slots and
 // never show a four-digit thousands value like "1200k".
 

@@ -45,7 +45,7 @@ function NotScouted({ username, error }: { username: string; error: GithubError 
       <p className="mt-3 text-[15.5px] leading-[1.5] text-ink-soft">{message}</p>
       <Link
         href="/"
-        className="font-display mt-7 inline-flex h-[46px] items-center rounded-xl bg-gradient-to-b from-[#ff5c93] to-[#ff3d7f] px-6 text-[16px] tracking-[.06em] text-white transition hover:from-[#ff77a6] hover:to-[#ff3d7f]"
+        className="font-display gt-flame mt-7 inline-flex h-[46px] items-center rounded-xl px-6 text-[16px] tracking-[.06em] text-white"
       >
         MATCH SOMEONE ELSE
       </Link>

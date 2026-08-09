@@ -216,7 +216,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
           <div className="mx-auto mt-5 flex max-w-[420px] items-center justify-center gap-3 md:mx-0 md:justify-start">
             <a
               href={`/${profile.login}.png`}
-              className="font-display inline-flex items-center gap-2 rounded-[12px] bg-gradient-to-b from-[#ff5c93] to-[#ff3d7f] px-6 py-3 text-[15px] tracking-[.06em] text-white shadow-[0_0_0_1px_rgba(255,61,127,.4),0_10px_30px_rgba(255,61,127,.3)] transition hover:from-[#ff77a6] hover:to-[#ff3d7f]"
+              className="font-display gt-flame inline-flex items-center gap-2 rounded-[12px] px-6 py-3 text-[15px] tracking-[.06em] text-white"
             >
               SHARE THE CARD
             </a>
