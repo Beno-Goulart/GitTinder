@@ -7,6 +7,15 @@ export type TraitShape = Record<TraitKey, number>;
 // Match tiers, from dating-app verdict to "it's the one".
 export type Tier = "red" | "green" | "keeper" | "catch" | "turner" | "one";
 
+// Pair-chemistry tiers, from "merge the branches" to "conflicting dependencies".
+export type CompatTier =
+  | "merge"
+  | "sparks"
+  | "vibes"
+  | "coffee"
+  | "complicated"
+  | "nope";
+
 // The archetype ("vibe") read off a profile's trait shape.
 export type Vibe =
   | "influencer"

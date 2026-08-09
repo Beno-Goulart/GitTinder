@@ -213,10 +213,16 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
             )}
           </div>
 
-          <div className="mx-auto mt-5 flex max-w-[420px] items-center justify-center gap-3 md:mx-0 md:justify-start">
+          <div className="mx-auto mt-5 flex max-w-[420px] flex-wrap items-center justify-center gap-3 md:mx-0 md:justify-start">
+            <Link
+              href={`/vs/${encodeURIComponent(profile.login)}`}
+              className="font-display gt-flame inline-flex items-center gap-2 rounded-[12px] px-6 py-3 text-[15px] tracking-[.06em] text-white"
+            >
+              TEST COMPATIBILITY
+            </Link>
             <a
               href={`/${profile.login}.png`}
-              className="font-display gt-flame inline-flex items-center gap-2 rounded-[12px] px-6 py-3 text-[15px] tracking-[.06em] text-white"
+              className="font-display rounded-[12px] border border-line bg-surface/60 px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-brand"
             >
               SHARE THE CARD
             </a>
@@ -224,7 +230,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
               href={`https://github.com/${profile.login}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-display rounded-[12px] border border-line px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-ink"
+              className="font-display rounded-[12px] border border-line px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-brand"
             >
               GITHUB ↗
             </a>
