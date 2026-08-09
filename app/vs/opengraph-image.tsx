@@ -13,8 +13,8 @@ const normalize = (u: string) => u.trim().replace(/^@/, "");
 // segment can't hold an image sibling), but Next still hands it the captured
 // { users } params for nested URLs. If either scout fails, fall back to the same
 // branded "get matched" placeholder as the per-profile image.
-export default async function Image({ params }: { params: Promise<{ users?: string[] }> }) {
-  const users = ((await params).users ?? []).filter(Boolean).map(normalize).slice(0, 2);
+export default async function Image({ params }: { params: Promise<{ users?: string[] } | undefined> }) {
+  const users = ((await params)?.users ?? []).filter(Boolean).map(normalize).slice(0, 2);
   try {
     const [a, b] = await Promise.all([scoutProfile(users[0]), scoutProfile(users[1])]);
     return await renderCompatImage(a, b);
