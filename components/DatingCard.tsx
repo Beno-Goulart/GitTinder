@@ -198,7 +198,7 @@ function DatingCard({ profile }: { profile: DatingProfile }) {
           WebkitLineClamp: 3,
           WebkitBoxOrient: "vertical",
           overflow: "hidden",
-          height: "13cqw",
+          height: "16.5cqw",
         }}
       >
         {profile.bio.slice(0, 3).join(" ")}
@@ -207,7 +207,7 @@ function DatingCard({ profile }: { profile: DatingProfile }) {
       {/* interests — top languages as "passions" */}
       <div
         style={{
-          ...at(6.3, 85.5),
+          ...at(6.3, 87),
           width: "88%",
           display: "flex",
           gap: "1.6cqw",

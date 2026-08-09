@@ -19,8 +19,8 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
       description: `${res.profile.name || res.profile.login} on GitTinder: ${res.profile.match}% match, ${res.profile.tierLabel}, ${res.profile.vibe}.`,
       alternates: { canonical: `/${res.profile.login}` },
       twitter: { card: "summary_large_image" },
-      // og:image comes from the file-convention opengraph-image.tsx (the landscape
-      // unfurl). The portrait card lives at /<login>.png for README embeds.
+      // og:image comes from the file-convention opengraph-image.tsx — the portrait
+      // card, identical to the /<login>.png embed (SHARE THE CARD).
     };
   }
   // Not a real profile — keep these soft-404s out of the index.

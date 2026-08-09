@@ -2,24 +2,26 @@ import { ImageResponse } from "next/og";
 import { after } from "next/server";
 import { scoutProfile } from "@/lib/scout";
 import { recordScout } from "@/lib/analytics";
-import { renderProfileOG, OG_SIZE } from "@/lib/og/ogImage";
+import { renderCardImage, CARD_SIZE } from "@/lib/og/renderCard";
 import { loadCardFonts } from "@/lib/og/card";
 
 export const runtime = "nodejs";
 export const alt = "GitTinder dating profile";
-export const size = OG_SIZE;
+export const size = CARD_SIZE;
 export const contentType = "image/png";
 
 const CACHE = { "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" };
 
+// The profile's share preview is the exact portrait card that SHARE THE CARD
+// opens (gittinder.com/<user>.png) — one layout, same rendering. A failed scout
+// falls back to a simple branded "get matched" unfurl at the same card size.
 export default async function Image({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
   try {
     const profile = await scoutProfile(username);
     after(() => recordScout()); // count link unfurls; flushed after response
-    return await renderProfileOG(profile);
+    return await renderCardImage(profile);
   } catch {
-    // Not a real profile -> a simple branded "get matched" unfurl.
     const fonts = await loadCardFonts();
     return new ImageResponse(
       (
@@ -32,7 +34,7 @@ export default async function Image({ params }: { params: Promise<{ username: st
             alignItems: "center",
             justifyContent: "center",
             background: "#0d0717",
-            backgroundImage: "radial-gradient(900px 500px at 50% -10%, rgba(255,61,127,0.16), transparent 60%)",
+            backgroundImage: "radial-gradient(60% 40% at 50% 32%, rgba(255,61,127,0.18), transparent 72%)",
             color: "#e6edf3",
             fontFamily: "DINPro",
             textAlign: "center",
@@ -45,7 +47,7 @@ export default async function Image({ params }: { params: Promise<{ username: st
           <div style={{ display: "flex", fontSize: 30, color: "#ff3d7f", fontWeight: 700, marginTop: 26 }}>gittinder.com</div>
         </div>
       ),
-      { ...size, fonts, headers: CACHE },
+      { ...CARD_SIZE, fonts, headers: CACHE },
     );
   }
 }

@@ -15,6 +15,10 @@ import { loadCardFonts } from "./card";
 const EMBED_W = 810; // /<user>.png render width
 const cardH = (w: number) => Math.round((w * 7) / 5); // native 5:7 aspect
 
+// Native card dimensions — shared by the /<user>.png route AND the per-profile
+// OG image so both render the exact same portrait card.
+export const CARD_SIZE = { width: EMBED_W, height: cardH(EMBED_W) }; // 810×1134
+
 const AVATAR_FALLBACK =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
@@ -151,12 +155,12 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
       </div>
 
       {/* bio — clipped to the three-line zone */}
-      <div style={{ ...at(6.3, 69.6), width: `${87.4}%`, height: cqw(13), overflow: "hidden", fontFamily: "DINPro", fontSize: cqw(4), lineHeight: 1.34, color: "rgba(255,255,255,.96)" }}>
+      <div style={{ ...at(6.3, 69.6), width: `${87.4}%`, height: cqw(16.5), overflow: "hidden", fontFamily: "DINPro", fontSize: cqw(4), lineHeight: 1.34, color: "rgba(255,255,255,.96)" }}>
         {profile.bio.slice(0, 3).join(" ")}
       </div>
 
       {/* interests — top languages as "passions" */}
-      <div style={{ ...at(6.3, 85.5), display: "flex", gap: cqw(1.6) }}>
+      <div style={{ ...at(6.3, 87), display: "flex", gap: cqw(1.6) }}>
         {profile.interests.slice(0, 3).map((lang, i) => (
           <div
             key={lang}
