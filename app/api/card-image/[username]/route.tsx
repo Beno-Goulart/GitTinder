@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { scoutProfile } from "@/lib/scout";
+import { checkScoutRateLimit } from "@/lib/rateLimit";
 import { renderCardImage } from "@/lib/og/renderCard";
 import { loadCardFonts } from "@/lib/og/card";
 
@@ -11,9 +12,11 @@ const H = Math.round((W * 7) / 5);
 // Embeddable card image: gittinder.com/<user>.png (via the next.config rewrite) -> here.
 // The card is rendered on demand to match the in-app DatingCard (lib/og/renderCard)
 // and cached hard at the CDN, so there's no object store to keep in sync or pay for.
-// A failed scout (no such user) or a render error falls back to a small branded hint.
+// A failed scout (no such user), a render error, OR a rate-limited IP falls back to
+// a small branded hint — no GitHub budget is spent either way.
 export async function GET(req: Request, { params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
+  if (!(await checkScoutRateLimit()).allowed) return fallback(username);
   try {
     const profile = await scoutProfile(username);
     return await renderCardImage(profile);

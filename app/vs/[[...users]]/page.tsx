@@ -5,6 +5,7 @@ import CompatPicker from "@/components/CompatPicker";
 import CompatView from "@/components/CompatView";
 import { computeChemistry } from "@/lib/dating/compat";
 import { type GithubError } from "@/lib/github/client";
+import { checkScoutRateLimit, RATE_LIMIT_ERROR } from "@/lib/rateLimit";
 import { loadProfile } from "@/lib/scout";
 import type { DatingProfile } from "@/lib/dating/types";
 
@@ -71,6 +72,16 @@ export default async function Page({ params }: { params: Promise<{ users?: strin
             <CompatPicker initial={users} />
           </div>
         </main>
+      </div>
+    );
+  }
+
+  // Budget check runs before any scout (memoised per request).
+  if (!(await checkScoutRateLimit()).allowed) {
+    return (
+      <div className="relative min-h-screen overflow-x-hidden text-ink">
+        <Background />
+        <NotScouted which="first" login={users[0]} error={RATE_LIMIT_ERROR} />
       </div>
     );
   }

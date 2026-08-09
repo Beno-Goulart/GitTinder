@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Background from "@/components/Background";
 import { type GithubError } from "@/lib/github/client";
+import { checkScoutRateLimit, RATE_LIMIT_ERROR } from "@/lib/rateLimit";
 import { loadProfile } from "@/lib/scout";
 import { recordScout } from "@/lib/analytics";
 import type { DatingProfile } from "@/lib/dating/types";
@@ -12,6 +13,11 @@ export const dynamic = "force-dynamic"; // per-user, token-gated, always fresh
 
 export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
   const { username } = await params;
+  // Budget check runs before the scout; memoised per request, so the Page below
+  // shares this single check (and increment) instead of double-counting.
+  if (!(await checkScoutRateLimit()).allowed) {
+    return { title: `@${username} · GitTinder`, robots: { index: false } };
+  }
   const res = await loadProfile(username);
   if ("profile" in res) {
     return {
@@ -55,6 +61,14 @@ function NotScouted({ username, error }: { username: string; error: GithubError 
 
 export default async function Page({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
+  if (!(await checkScoutRateLimit()).allowed) {
+    return (
+      <div className="relative min-h-screen overflow-x-hidden text-ink">
+        <Background />
+        <NotScouted username={username} error={RATE_LIMIT_ERROR} />
+      </div>
+    );
+  }
   const res = await loadProfile(username);
   if ("profile" in res) {
     const profile = res.profile as DatingProfile;
