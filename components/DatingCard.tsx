@@ -2,7 +2,7 @@
 
 import { memo, type CSSProperties, type ReactEventHandler } from "react";
 import { ShieldCheck } from "lucide-react";
-import type { DatingProfile } from "@/lib/dating/types";
+import type { CardProfile } from "@/lib/dating/types";
 import { profileTheme, rgba } from "@/lib/dating/theme";
 import { logoSlugFor, languageLogoUrl } from "@/lib/github/languages";
 import { cardDisplayName } from "@/lib/text";
@@ -37,7 +37,7 @@ function interestLogo(name: string): string | null {
   return slug ? languageLogoUrl(slug) : null;
 }
 
-function DatingCard({ profile }: { profile: DatingProfile }) {
+function DatingCard({ profile }: { profile: CardProfile }) {
   const t = profileTheme(profile);
   const displayName = cardDisplayName(profile.name || profile.login);
 

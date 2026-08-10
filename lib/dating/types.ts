@@ -119,3 +119,24 @@ export interface DatingProfile {
     reasons: Record<TraitKey, string>;
   };
 }
+
+// The subset of a DatingProfile a swipeable dating CARD actually paints (the
+// deck / home fan / pair cards). Kept lean so dozens of baked profiles ship
+// in the client bundle without dragging in the full report payload. A full
+// DatingProfile is structurally assignable to it.
+export type CardProfile = Pick<
+  DatingProfile,
+  | "login"
+  | "name"
+  | "avatarUrl"
+  | "location"
+  | "repos"
+  | "age"
+  | "height"
+  | "match"
+  | "tier"
+  | "tierLabel"
+  | "verified"
+  | "bio"
+  | "interests"
+>;

@@ -12,12 +12,12 @@ import {
   User,
   type LucideIcon,
 } from "lucide-react";
-import type { DatingProfile, TraitKey } from "@/lib/dating/types";
+import type { DatingProfile, TraitKey, CardProfile } from "@/lib/dating/types";
 import { TRAIT_DESCRIPTIONS, TRAIT_LABELS, TRAITS } from "@/lib/dating/constants";
 import { profileTheme, rgba } from "@/lib/dating/theme";
 import { formatCount } from "@/lib/format";
-import { SAMPLE_PROFILES } from "@/lib/github/samples";
 import { languageLogoUrl, logoSlugFor } from "@/lib/github/languages";
+import { SWIPE_PROFILES } from "@/lib/swipe";
 import DatingCard from "./DatingCard";
 import TraitRadar from "./TraitRadar";
 import SwipeDeck from "./SwipeDeck";
@@ -116,7 +116,7 @@ function MetricBar({ label, value, score, unit, accent, index = 0 }: { label: st
 export default function ProfileView({ profile }: { profile: DatingProfile }) {
   const t = profileTheme(profile);
   const [liked, setLiked] = useState(false);
-  const [picked, setPicked] = useState<DatingProfile[]>(SAMPLE_PROFILES);
+  const [picked, setPicked] = useState<CardProfile[]>(SWIPE_PROFILES);
 
   const metaBits = [
     profile.height,
@@ -321,7 +321,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
             type="button"
             onClick={() => {
               setLiked(false);
-              setPicked([...SAMPLE_PROFILES].sort(() => Math.random() - 0.5));
+              setPicked([...SWIPE_PROFILES].sort(() => Math.random() - 0.5));
             }}
             className="inline-flex cursor-pointer items-center gap-2 text-[12.5px] font-semibold text-ink-soft transition hover:text-brand"
           >

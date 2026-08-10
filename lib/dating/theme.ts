@@ -1,5 +1,5 @@
 import { TIER_ACCENT } from "./constants";
-import type { DatingProfile, Tier } from "./types";
+import type { Tier } from "./types";
 
 // hex (#rgb / #rrggbb) → rgba() string, so a single tier accent hex can drive
 // translucent glows/tints without hand-writing each alpha variant.
@@ -30,6 +30,6 @@ export function tierTheme(tier: Tier): ProfileTheme {
   };
 }
 
-export function profileTheme(p: DatingProfile): ProfileTheme {
+export function profileTheme(p: { tier: Tier }): ProfileTheme {
   return tierTheme(p.tier);
 }

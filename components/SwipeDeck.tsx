@@ -8,7 +8,7 @@ import {
   type PointerEvent,
 } from "react";
 import { Heart, X } from "lucide-react";
-import type { DatingProfile } from "@/lib/dating/types";
+import type { CardProfile } from "@/lib/dating/types";
 import DatingCard from "./DatingCard";
 
 // A single draggable card in the swipe deck. Drag right = like, left = nope;
@@ -22,7 +22,7 @@ export interface DeckCardHandle {
 }
 
 interface CardProps {
-  profile: DatingProfile;
+  profile: CardProfile;
   index: number;
   onDecision: (like: boolean) => void;
   onOpen: (login: string) => void;
@@ -117,7 +117,7 @@ export default function SwipeDeck({
   onOpen,
   onSwipe,
 }: {
-  profiles: DatingProfile[];
+  profiles: CardProfile[];
   onOpen: (login: string) => void;
   onSwipe?: (login: string, like: boolean) => void;
 }) {
