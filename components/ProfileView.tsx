@@ -28,6 +28,7 @@ import ShareButton from "./ShareButton";
 import CardShare from "./CardShare";
 import EmbedSnippet from "./EmbedSnippet";
 import ThemeToggle from "./ThemeToggle";
+import GitHubLink from "./GitHubLink";
 
 const TRAIT_ICONS: Record<TraitKey, LucideIcon> = {
   spark: Star,
@@ -142,6 +143,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
           ← GITTINDER
         </Link>
         <div className="flex items-center gap-2">
+          <GitHubLink />
           <ThemeToggle />
           <ShareButton
             path={`/${encodeURIComponent(profile.login)}`}

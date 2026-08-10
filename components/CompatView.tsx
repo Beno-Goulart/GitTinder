@@ -18,6 +18,7 @@ import type { DatingProfile, TraitKey } from "@/lib/dating/types";
 import DatingCard from "./DatingCard";
 import ShareButton from "./ShareButton";
 import ThemeToggle from "./ThemeToggle";
+import GitHubLink from "./GitHubLink";
 
 const TRAIT_ICONS: Record<TraitKey, LucideIcon> = {
   spark: Star,
@@ -148,6 +149,7 @@ export default function CompatView({
           ← GITTINDER
         </Link>
         <div className="flex items-center gap-2">
+          <GitHubLink />
           <ThemeToggle />
           <ShareButton
             path={`/vs/${encodeURIComponent(a.login)}/${encodeURIComponent(b.login)}`}

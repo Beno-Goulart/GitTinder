@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Background from "@/components/Background";
+import GitHubLink from "@/components/GitHubLink";
 import CompatPicker from "@/components/CompatPicker";
 import CompatView from "@/components/CompatView";
 import { computeChemistry } from "@/lib/dating/compat";
@@ -61,6 +62,9 @@ export default async function Page({ params }: { params: Promise<{ users?: strin
       <div className="relative min-h-screen overflow-x-hidden text-ink">
         <Background />
         <main className="relative z-[2] mx-auto flex min-h-screen max-w-[680px] flex-col items-center justify-center px-6 text-center">
+          <div className="absolute right-6 top-6">
+            <GitHubLink />
+          </div>
           <div className="font-display text-[12px] font-bold tracking-[.3em] text-brand">GITTINDER</div>
           <h1 className="font-display mt-3 text-[clamp(30px,6vw,52px)] font-black leading-[.95]">
             CHECK THE <span className="gt-flame-text">CHEMISTRY</span>.
