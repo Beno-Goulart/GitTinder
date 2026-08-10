@@ -16,6 +16,7 @@ import { TRAIT_DESCRIPTIONS, TRAIT_LABELS } from "@/lib/dating/constants";
 import { languageLogoUrl, logoSlugFor } from "@/lib/github/languages";
 import type { DatingProfile, TraitKey } from "@/lib/dating/types";
 import DatingCard from "./DatingCard";
+import ShareButton from "./ShareButton";
 
 const TRAIT_ICONS: Record<TraitKey, LucideIcon> = {
   spark: Star,
@@ -145,12 +146,20 @@ export default function CompatView({
         <Link href="/" className="font-display text-[13px] tracking-[.16em] text-ink-mute transition hover:text-ink">
           ← GITTINDER
         </Link>
-        <Link
-          href="/vs"
-          className="font-display rounded-[10px] border border-line bg-surface/60 px-4 py-2 text-[12px] tracking-[.14em] text-ink-soft transition hover:border-brand/60 hover:text-brand"
-        >
-          NEW PAIR ↗
-        </Link>
+        <div className="flex items-center gap-2">
+          <ShareButton
+            path={`/vs/${encodeURIComponent(a.login)}/${encodeURIComponent(b.login)}`}
+            label="SHARE"
+            title={`@${a.login} × @${b.login} — ${t.score}% chemistry on GitTinder`}
+            text={`Are @${a.login} and @${b.login} a match? ${t.score}% chemistry on GitTinder.`}
+          />
+          <Link
+            href="/vs"
+            className="font-display rounded-[10px] border border-line bg-surface/60 px-4 py-2 text-[12px] tracking-[.14em] text-ink-soft transition hover:border-brand/60 hover:text-brand"
+          >
+            NEW PAIR ↗
+          </Link>
+        </div>
       </div>
 
       {/* the two cards + the seal */}

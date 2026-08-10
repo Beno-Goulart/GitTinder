@@ -22,6 +22,8 @@ import DatingCard from "./DatingCard";
 import TraitRadar from "./TraitRadar";
 import SwipeDeck from "./SwipeDeck";
 import MatchOverlay from "./MatchOverlay";
+import ShareButton from "./ShareButton";
+import EmbedSnippet from "./EmbedSnippet";
 
 const TRAIT_ICONS: Record<TraitKey, LucideIcon> = {
   spark: Star,
@@ -131,12 +133,12 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
         <Link href="/" className="font-display text-[13px] tracking-[.16em] text-ink-mute transition hover:text-ink">
           ← GITTINDER
         </Link>
-        <a
-          href={`/${profile.login}.png`}
-          className="font-display rounded-[10px] border border-line bg-surface/60 px-4 py-2 text-[12px] tracking-[.14em] text-ink-soft transition hover:border-brand/60 hover:text-brand"
-        >
-          SHARE CARD ↗
-        </a>
+        <ShareButton
+          path={`/${encodeURIComponent(profile.login)}`}
+          label="SHARE"
+          title={`${profile.name || profile.login} — rated ${profile.match} on GitTinder`}
+          text={`${profile.name || profile.login} rated ${profile.match} on GitTinder. Is it a match?`}
+        />
       </div>
 
       {/* the card + headline */}
@@ -220,12 +222,12 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
             >
               TEST COMPATIBILITY
             </Link>
-            <a
-              href={`/${profile.login}.png`}
-              className="font-display rounded-[12px] border border-line bg-surface/60 px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-brand"
-            >
-              SHARE THE CARD
-            </a>
+            <ShareButton
+              path={`/${encodeURIComponent(profile.login)}`}
+              label="SHARE THE CARD"
+              title={`${profile.name || profile.login} — rated ${profile.match} on GitTinder`}
+              text={`${profile.name || profile.login} rated ${profile.match} on GitTinder. Is it a match?`}
+            />
             <a
               href={`https://github.com/${profile.login}`}
               target="_blank"
@@ -307,6 +309,10 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
                 <MetricBar key={m.label} label={m.label} value={m.value} score={m.score} unit={m.unit} accent={t.accent} index={i} />
               ))}
             </div>
+          </Section>
+
+          <Section title="EMBED THE CARD" accent={t.accent}>
+            <EmbedSnippet login={profile.login} name={profile.name} />
           </Section>
         </div>
       </div>

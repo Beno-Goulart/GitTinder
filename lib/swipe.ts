@@ -622,3 +622,7 @@ const BAKED: CardProfile[] = [
 // The samples close the deck — the top card (queue[length-1]) is seen first,
 // so a familiar face opens and the freshly scouted crowd follows.
 export const SWIPE_PROFILES: CardProfile[] = [...BAKED, ...SAMPLE_PROFILES];
+
+// Just the freshly scouted crowd — the ranking pool for the home "TOP
+// PROFILES" strip (the showcase samples already get their own fan deck).
+export const BAKED_PROFILES: CardProfile[] = BAKED;

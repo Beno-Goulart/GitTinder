@@ -6,6 +6,7 @@ import ScoutForm from "@/components/ScoutForm";
 import SampleDeck from "@/components/SampleDeck";
 import LoadingScreen from "@/components/LoadingScreen";
 import FooterCredit from "@/components/FooterCredit";
+import TopProfiles from "@/components/TopProfiles";
 import { SAMPLE_PROFILES } from "@/lib/github/samples";
 
 export default function AppShell({
@@ -39,6 +40,7 @@ export default function AppShell({
         />
         <SampleDeck cards={SAMPLE_PROFILES} onPick={handleScout} />
       </div>
+      <TopProfiles />
       <footer className="relative z-[2] mt-auto flex flex-none items-center justify-center p-[clamp(12px,2.6vh,24px)]">
         <FooterCredit />
       </footer>
