@@ -104,7 +104,7 @@ Environment:
 Drop your card in a profile README, a portfolio, anywhere — it re-matches itself as your stats change:
 
 ```md
-[![My GitTinder card](https://gittinder.com/YOUR_USERNAME.png)](https://gittinder.com/YOUR_USERNAME)
+[![My GitTinder card](https://git-tinder-mu.vercel.app/YOUR_USERNAME.png)](https://git-tinder-mu.vercel.app/YOUR_USERNAME)
 ```
 
 ## Architecture
