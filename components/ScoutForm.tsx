@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { HeartHandshake } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import GitHubLink from "@/components/GitHubLink";
 import { SAMPLE_LOGINS } from "@/lib/github/samples";
@@ -27,12 +27,16 @@ export default function ScoutForm({ loading, error, scoutCount, onScout }: Props
 
   return (
     <div className="min-w-0 flex-1">
-      {/* the brand face — a beating heart where the mascot used to be */}
+      {/* the brand face — the logo from the README */}
       <div className="mb-3 flex items-center gap-3 max-[860px]:justify-center">
-        <HeartHandshake size={30} strokeWidth={2} className="text-brand" />
-        <span className="font-display text-[17px] tracking-[.1em] text-ink-soft">
-          GITTINDER
-        </span>
+        <Image
+          src="/logo.png"
+          alt="GitTinder"
+          width={1162}
+          height={1354}
+          priority
+          className="h-10 w-auto"
+        />
         <GitHubLink />
         <ThemeToggle />
       </div>

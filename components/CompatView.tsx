@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Flame,
@@ -145,8 +146,14 @@ export default function CompatView({
     <div className="relative z-[2] mx-auto w-full max-w-[1180px] px-[clamp(16px,4vw,40px)] pb-16">
       {/* top bar */}
       <div className="flex items-center justify-between py-4">
-        <Link href="/" className="font-display text-[13px] tracking-[.16em] text-ink-mute transition hover:text-ink">
-          ← GITTINDER
+        <Link href="/" aria-label="GitTinder home" className="transition hover:opacity-80">
+          <Image
+            src="/logo.png"
+            alt="GitTinder"
+            width={1162}
+            height={1354}
+            className="h-10 w-auto"
+          />
         </Link>
         <div className="flex items-center gap-2">
           <GitHubLink />

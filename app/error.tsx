@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import Background from "@/components/Background";
 
@@ -20,7 +21,14 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
     <div className="relative min-h-screen overflow-x-hidden text-ink">
       <Background />
       <main className="relative z-[2] mx-auto flex min-h-screen max-w-[560px] flex-col items-center justify-center px-6 text-center">
-        <div className="font-display text-[12px] font-bold tracking-[.3em] text-brand">GITTINDER</div>
+        <Image
+          src="/logo.png"
+          alt="GitTinder"
+          width={1162}
+          height={1354}
+          priority
+          className="h-11 w-auto"
+        />
         <h1 className="font-display mt-3 text-[clamp(30px,6vw,48px)] font-black leading-[.95]">The date went quiet</h1>
         <p className="mt-3 text-[15.5px] leading-[1.5] text-ink-soft">
           Something broke mid-match. Try again — if it keeps happening, the algorithm may be down for a moment.
