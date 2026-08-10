@@ -310,11 +310,13 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
               ))}
             </div>
           </Section>
-
-          <Section title="EMBED THE CARD" accent={t.accent}>
-            <EmbedSnippet login={profile.login} name={profile.name} />
-          </Section>
         </div>
+
+        {/* full-width row below the two-column report — keeps the left/right
+            disposition untouched and gives the embed its own line */}
+        <Section title="EMBED THE CARD" accent={t.accent} className="md:col-span-2">
+          <EmbedSnippet login={profile.login} name={profile.name} />
+        </Section>
       </div>
 
       {/* the swipe deck — keep swiping */}
