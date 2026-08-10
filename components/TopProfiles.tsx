@@ -42,7 +42,7 @@ export default function TopProfiles() {
               className="group flex items-center gap-[12px] rounded-2xl border border-line bg-surface/60 p-[12px] transition hover:border-brand/50 hover:bg-surface"
               style={frame}
             >
-              <span className="relative block h-[52px] w-[52px] shrink-0 overflow-hidden rounded-xl border border-line bg-[#e8dfcd]">
+              <span className="relative block h-[52px] w-[52px] shrink-0 overflow-hidden rounded-xl border border-line bg-surface-2">
                 <img
                   src={p.avatarUrl}
                   alt=""

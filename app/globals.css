@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: flip the whole design system by adding `.dark` to
+   <html> (set by the theme script + toggle). Tokens below are CSS variables,
+   so overriding them under `.dark` re-tints every utility that reads them. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
    GitTinder Design System — paper & ink × Tinder flame
    The keystone module: every screen reads from these tokens.
@@ -43,11 +48,46 @@
   --animate-pop: pop 0.16s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* ambient background knobs — the Background washes and the contribution-grid
+   dim cells read these, so dark mode can swap the cream glow for a plum one */
+:root {
+  --gt-glow-flood: rgba(255, 244, 224, 0.35);
+  --gt-glow-floor: rgba(120, 90, 40, 0.12);
+  --gt-grid-dim: #d8c8a2;
+}
+
+/* ---- dark mode — the same paper & ink identity, turned down ---- */
+.dark {
+  --color-bg: #131017;
+  --color-bg-deep: #0e0b13;
+  --color-panel: #1c1724;
+  --color-surface: #1e1827;
+  --color-surface-2: #271f35;
+  --color-line: #302742;
+  --color-gray: #6f667a;
+
+  --color-ink: #f5eefb;
+  --color-ink-dim: #d8cee3;
+  --color-ink-soft: #b2a6c1;
+  --color-ink-faint: #978aa5;
+  --color-ink-mute: #7b6f8a;
+
+  --gt-glow-flood: rgba(255, 90, 110, 0.2);
+  --gt-glow-floor: rgba(255, 70, 85, 0.1);
+  --gt-grid-dim: #3a3150;
+}
+
 @layer base {
   html,
   body {
     margin: 0;
     padding: 0;
+  }
+  html {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
   }
   body {
     background: var(--color-bg);

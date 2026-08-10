@@ -26,6 +26,7 @@ import SwipeDeck from "./SwipeDeck";
 import MatchOverlay from "./MatchOverlay";
 import ShareButton from "./ShareButton";
 import EmbedSnippet from "./EmbedSnippet";
+import ThemeToggle from "./ThemeToggle";
 
 const TRAIT_ICONS: Record<TraitKey, LucideIcon> = {
   spark: Star,
@@ -139,12 +140,15 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
         <Link href="/" className="font-display text-[13px] tracking-[.16em] text-ink-mute transition hover:text-ink">
           ← GITTINDER
         </Link>
-        <ShareButton
-          path={`/${encodeURIComponent(profile.login)}`}
-          label="SHARE"
-          title={`${profile.name || profile.login} — rated ${profile.match} on GitTinder`}
-          text={`${profile.name || profile.login} rated ${profile.match} on GitTinder. Is it a match?`}
-        />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <ShareButton
+            path={`/${encodeURIComponent(profile.login)}`}
+            label="SHARE"
+            title={`${profile.name || profile.login} — rated ${profile.match} on GitTinder`}
+            text={`${profile.name || profile.login} rated ${profile.match} on GitTinder. Is it a match?`}
+          />
+        </div>
       </div>
 
       {/* the card + headline */}
