@@ -44,11 +44,13 @@ export default function ScoutForm({ loading, error, scoutCount, onScout }: Props
       </div>
 
       <h1 className="font-display m-0 mb-3 text-[clamp(52px,7vw,100px)] leading-[.82] tracking-[.005em]">
-        FIND YOUR <span className="gt-flame-text">MATCH</span>.
+        One GitHub username. <br /> One dating <span className="gt-flame-text">profile.</span>
       </h1>
-      <p className="mb-[26px] max-w-[440px] text-[clamp(15px,1.7vw,18px)] font-medium leading-[1.5] text-ink-dim max-[860px]:mx-auto">
-        One GitHub username. One dating profile. Rated 0–99, complete with a bio,
-        passions and a tier — is it a match?
+      <p className="mb-[10px] max-w-[440px] text-[clamp(15px,1.7vw,18px)] font-medium leading-[1.5] text-ink-dim max-[860px]:mx-auto">
+        Rated 0–99, complete with a bio, passions and a tier
+      </p>
+      <p className="font-display mb-[26px] text-[clamp(17px,2vw,22px)] font-bold tracking-[.02em] text-brand">
+        is it a match?
       </p>
 
       <form
