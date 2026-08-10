@@ -69,7 +69,7 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className={`rounded-2xl border border-line bg-surface/60 p-[16px] ${className ?? ""}`}>
+    <section className={`min-w-0 rounded-2xl border border-line bg-surface/60 p-[16px] ${className ?? ""}`}>
       <div className="mb-[8px] flex items-center gap-[9px]">
         <span className="h-[2px] w-[16px] rounded-full" style={{ background: accent }} />
         <h3 className="font-display text-[11px] font-bold tracking-[.22em] text-ink-faint">{title}</h3>
@@ -253,8 +253,9 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
         </div>
       </header>
 
-      {/* the report grid */}
-      <div className="mt-12 grid gap-[16px] md:grid-cols-[1fr_1fr]">
+      {/* the report grid — minmax(0,1fr) lets the tracks shrink below the
+          embed snippet's long line (grid tracks default to min-content width) */}
+      <div className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-[16px] md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {/* left — the six traits, drawn as a radar */}
         <Section title="THE SIX TRAITS" accent={t.accent}>
           <div className="mx-auto max-w-[420px]">
@@ -294,7 +295,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
         </Section>
 
         {/* right column stack */}
-        <div className="flex flex-col gap-[16px]">
+        <div className="flex min-w-0 flex-col gap-[16px]">
           <Section title="ABOUT" accent={t.accent}>
             <div className="flex flex-col gap-[12px] pt-1">
               <p className="text-[14px] leading-[1.6] text-ink-soft">
@@ -323,13 +324,11 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
               ))}
             </div>
           </Section>
-        </div>
 
-        {/* full-width row below the two-column report — keeps the left/right
-            disposition untouched and gives the embed its own line */}
-        <Section title="EMBED THE CARD" accent={t.accent} className="md:col-span-2">
-          <EmbedSnippet login={profile.login} name={profile.name} />
-        </Section>
+          <Section title="EMBED THE CARD" accent={t.accent} className="w-full">
+            <EmbedSnippet login={profile.login} name={profile.name} />
+          </Section>
+        </div>
       </div>
 
       {/* the swipe deck — keep swiping */}

@@ -43,7 +43,7 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-line bg-surface/60 p-[16px]">
+    <section className="min-w-0 rounded-2xl border border-line bg-surface/60 p-[16px]">
       <div className="mb-[8px] flex items-center gap-[9px]">
         <span className="h-[2px] w-[16px] rounded-full" style={{ background: accent }} />
         <h3 className="font-display text-[11px] font-bold tracking-[.22em] text-ink-faint">{title}</h3>
@@ -172,7 +172,7 @@ export default function CompatView({
           <a
             href={`/${a.login}`}
             aria-label={`${a.login}'s profile`}
-            className="block w-[min(190px,34vw)] shrink-0 rotate-[-5deg] transition duration-500 hover:rotate-0"
+            className="block w-[clamp(80px,24vw,190px)] shrink-0 rotate-[-5deg] transition duration-500 hover:rotate-0"
           >
             <DatingCard profile={a} />
           </a>
@@ -197,7 +197,7 @@ export default function CompatView({
           <a
             href={`/${b.login}`}
             aria-label={`${b.login}'s profile`}
-            className="block w-[min(190px,34vw)] shrink-0 rotate-[5deg] transition duration-500 hover:rotate-0"
+            className="block w-[clamp(80px,24vw,190px)] shrink-0 rotate-[5deg] transition duration-500 hover:rotate-0"
           >
             <DatingCard profile={b} />
           </a>
@@ -218,7 +218,7 @@ export default function CompatView({
       </header>
 
       {/* the breakdown */}
-      <div className="mt-[clamp(28px,5vw,48px)] grid gap-[16px] md:grid-cols-[1fr_1fr]">
+      <div className="mt-[clamp(28px,5vw,48px)] grid grid-cols-[minmax(0,1fr)] gap-[16px] md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <Section title="THE CHEMISTRY" accent={t.accent}>
           <div className="flex flex-col gap-[14px] pt-1">
             <Meter label="Shared languages" value={t.sharedScore} accent={t.accent} index={0} />
