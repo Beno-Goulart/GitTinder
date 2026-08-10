@@ -25,6 +25,7 @@ import TraitRadar from "./TraitRadar";
 import SwipeDeck from "./SwipeDeck";
 import MatchOverlay from "./MatchOverlay";
 import ShareButton from "./ShareButton";
+import CardShare from "./CardShare";
 import EmbedSnippet from "./EmbedSnippet";
 import ThemeToggle from "./ThemeToggle";
 
@@ -232,9 +233,9 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
             >
               TEST COMPATIBILITY
             </Link>
-            <ShareButton
+            <CardShare
               path={`/${encodeURIComponent(profile.login)}`}
-              label="SHARE THE CARD"
+              login={profile.login}
               title={`${profile.name || profile.login} — rated ${profile.match} on GitTinder`}
               text={`${profile.name || profile.login} rated ${profile.match} on GitTinder. Is it a match?`}
             />
