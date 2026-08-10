@@ -1,25 +1,30 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { Check, Copy } from "lucide-react";
 
 // A copyable HTML snippet for embedding a profile's GitTinder card anywhere —
 // an <img> pointing at gittinder.com/<user>.png (the Satori-rendered card PNG).
-// `origin` is resolved at runtime so dev/preview links point at themselves.
+// `origin` is resolved on the client so dev/preview links point at themselves;
+// useSyncExternalStore keeps the server snapshot and the first client render
+// identical (no hydration mismatch), then swaps in the real origin after mount.
 
 interface Props {
   login: string;
   name?: string;
 }
 
+const subscribe = () => () => {};
+const getServerOrigin = () => "https://gittinder.com";
+
 export default function EmbedSnippet({ login, name }: Props) {
   const [copied, setCopied] = useState(false);
+  const origin = useSyncExternalStore(subscribe, () => window.location.origin, getServerOrigin);
 
   const snippet = useMemo(() => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "https://gittinder.com";
     const alt = `${name || login} — rated on GitTinder`;
     return `<img src="${origin}/${encodeURIComponent(login)}.png" alt="${alt}" width="405" height="567" />`;
-  }, [login, name]);
+  }, [login, name, origin]);
 
   const copy = async () => {
     try {

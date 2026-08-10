@@ -156,3 +156,31 @@ export function computeChemistry(a: DatingProfile, b: DatingProfile): Chemistry 
     notes: [langLine, compLine, charmLine],
   };
 }
+
+// --- Mutual-match logic (KEEP SWIPING) ------------------------------------
+// The full pair report needs both six-trait radars, but the swipe deck ships
+// lean baked cards (no stats). `sparkScore` approximates the pair chemistry
+// with the fields a card DOES carry — the shared-language overlap and the
+// combined on-paper charm — reusing the exact same components (jaccard +
+// `charm`) the full formula weighs, so a match and the /vs report agree on
+// what "compatible" means. Both DatingProfile and CardProfile fit Sparkable.
+
+export interface Sparkable {
+  login: string;
+  match: number;
+  interests: string[];
+}
+
+// Pairs at or above this spark count as mutual — the liked profile "swipes
+// back". Tuned so a match needs real overlap or real pull, never a freebie.
+export const MATCH_THRESHOLD = 50;
+
+export function sparkScore(you: Sparkable, them: Sparkable): number {
+  const sharedScore = Math.round(100 * jaccard(you.interests, them.interests));
+  const charm = Math.round((you.match + them.match) / 2);
+  return clamp(Math.round(0.5 * sharedScore + 0.5 * charm), 1, 99);
+}
+
+export function isMutualMatch(you: Sparkable, them: Sparkable): boolean {
+  return sparkScore(you, them) >= MATCH_THRESHOLD;
+}

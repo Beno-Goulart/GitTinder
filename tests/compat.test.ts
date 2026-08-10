@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { buildProfile } from "@/lib/dating/engine";
-import { COMPAT_TIERS, computeChemistry, jaccard } from "@/lib/dating/compat";
+import {
+  COMPAT_TIERS,
+  computeChemistry,
+  isMutualMatch,
+  jaccard,
+  MATCH_THRESHOLD,
+  sparkScore,
+  type Sparkable,
+} from "@/lib/dating/compat";
 import type { Signals } from "@/lib/dating/types";
 
 // The pair engine is pure — the /vs page and its OG image run the exact same
@@ -117,5 +125,55 @@ describe("computeChemistry — the pair score", () => {
       expect(c[k]).toBeGreaterThanOrEqual(0);
       expect(c[k]).toBeLessThanOrEqual(100);
     }
+  });
+});
+
+describe("sparkScore / isMutualMatch — the deck's mutual-swipe logic", () => {
+  const you: Sparkable = { login: "you", match: 70, interests: ["TypeScript", "Go", "Rust"] };
+
+  it("returns a deterministic integer clamped to 1–99", () => {
+    const them: Sparkable = { login: "them", match: 60, interests: ["TypeScript", "Python"] };
+    const s1 = sparkScore(you, them);
+    const s2 = sparkScore(you, them);
+    expect(Number.isInteger(s1)).toBe(true);
+    expect(s1).toBeGreaterThanOrEqual(1);
+    expect(s1).toBeLessThanOrEqual(99);
+    expect(s2).toBe(s1);
+  });
+
+  it("rewards shared languages and combined pull", () => {
+    const overlap = sparkScore(you, { login: "a", match: 70, interests: ["TypeScript", "Go"] });
+    const disjoint = sparkScore(you, { login: "b", match: 70, interests: ["Python", "Lua"] });
+    expect(overlap).toBeGreaterThan(disjoint);
+  });
+
+  it("rewards raw charm even with zero shared languages", () => {
+    const bothStrong = sparkScore(you, { login: "a", match: 95, interests: ["Python"] });
+    const bothWeak = sparkScore(you, { login: "b", match: 10, interests: ["Python"] });
+    expect(bothStrong).toBeGreaterThan(bothWeak);
+  });
+
+  it("matches on identical profiles but never below the threshold", () => {
+    expect(isMutualMatch(you, { ...you, login: "clone" })).toBe(true);
+    const lonely: Sparkable = { login: "lonely", match: 10, interests: ["Cobol"] };
+    expect(sparkScore(you, lonely)).toBeLessThan(MATCH_THRESHOLD);
+    expect(isMutualMatch(you, lonely)).toBe(false);
+  });
+
+  it("is symmetric — the spark doesn't care who swiped first", () => {
+    const them: Sparkable = { login: "them", match: 60, interests: ["TypeScript"] };
+    expect(sparkScore(you, them)).toBe(sparkScore(them, you));
+    expect(isMutualMatch(you, them)).toBe(isMutualMatch(them, you));
+  });
+
+  it("agrees with the full chemistry on the shared-languages + charm inputs", () => {
+    // The deck's lean approximation and the full /vs engine weight the same
+    // two components, so a high-spark pair also lands in a friendly tier.
+    const a = profile({ rankedLanguages: ["TypeScript", "Go"] });
+    const b = profile({ login: "other", rankedLanguages: ["TypeScript", "Rust"] });
+    const c = computeChemistry(a, b);
+    const s = sparkScore(a, b);
+    expect(s).toBeGreaterThanOrEqual(40);
+    expect(s).toBeLessThanOrEqual(c.score + 20);
   });
 });

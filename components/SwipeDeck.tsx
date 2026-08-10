@@ -121,7 +121,7 @@ export default function SwipeDeck({
 }: {
   profiles: CardProfile[];
   onOpen: (login: string) => void;
-  onSwipe?: (login: string, like: boolean) => void;
+  onSwipe?: (profile: CardProfile, like: boolean) => void;
 }) {
   const [queue, setQueue] = useState(profiles);
   const [verdicts, setVerdicts] = useState<{ login: string; like: boolean }[]>([]);
@@ -185,7 +185,7 @@ export default function SwipeDeck({
           onDecision={(like) => {
             setVerdicts((v) => [...v, { login: top.login, like }]);
             setQueue((q) => q.slice(0, -1));
-            onSwipe?.(top.login, like);
+            onSwipe?.(top, like);
           }}
           onOpen={onOpen}
         />

@@ -2,20 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { PartyPopper, X } from "lucide-react";
-import type { DatingProfile } from "@/lib/dating/types";
+import type { CardProfile, DatingProfile } from "@/lib/dating/types";
+import { sparkScore } from "@/lib/dating/compat";
 import DatingCard from "./DatingCard";
 import { punAt } from "@/lib/puns";
 
-// "It's a match!" — shown when you like a profile on the report. Two card
-// previews slide in (theirs + a cheeky mirror of yours), a pun and a share CTA.
+// "It's a match!" — shown when you like someone in the deck and the spark is
+// mutual (sparkScore at/above MATCH_THRESHOLD). Two DIFFERENT cards slide in —
+// the page owner and the profile that swiped back — plus the pair chemistry
+// and a CTA to see the full /vs report.
 export default function MatchOverlay({
   profile,
+  mate,
   onClose,
 }: {
   profile: DatingProfile;
+  mate: CardProfile;
   onClose: () => void;
 }) {
   const [tick, setTick] = useState(0);
+  const spark = sparkScore(profile, mate);
 
   useEffect(() => {
     const id = setInterval(() => setTick((t) => t + 1), 2600);
@@ -47,7 +53,7 @@ export default function MatchOverlay({
           <X size={26} />
         </button>
 
-        {/* two cards slide in from the sides */}
+        {/* two different cards slide in — the owner and the profile that swiped back */}
         <div className="relative flex h-[300px] w-full items-center justify-center">
           <div
             className="absolute w-[180px] animate-pop"
@@ -63,7 +69,7 @@ export default function MatchOverlay({
               zIndex: 2,
             }}
           >
-            <DatingCard profile={profile} />
+            <DatingCard profile={mate} />
           </div>
           <div
             className="relative z-10 flex h-[110px] w-[110px] items-center justify-center rounded-full"
@@ -86,16 +92,18 @@ export default function MatchOverlay({
         </p>
 
         <p className="mt-4 max-w-[440px] text-[14px] leading-relaxed text-white/60">
-          {profile.name || profile.login} is {profile.match}% match — share the card
-          and see if they swipe back.
+          @{profile.login} × @{mate.login} —{" "}
+          <span className="font-semibold text-white">{spark}% chemistry</span>.{" "}
+          {mate.name || mate.login} swiped back. See the full report and decide
+          together.
         </p>
 
         <a
-          href={`/${profile.login}.png`}
+          href={`/vs/${encodeURIComponent(profile.login)}/${encodeURIComponent(mate.login)}`}
           onClick={onClose}
           className="font-display gt-flame mt-6 inline-flex items-center gap-2 rounded-[14px] px-8 py-3 text-[18px] tracking-[.06em] text-white"
         >
-          SHARE THE CARD
+          SHARE THE MATCH
         </a>
         <button
           type="button"

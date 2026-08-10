@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   Flame,
@@ -10,10 +10,12 @@ import {
   RefreshCcw,
   Star,
   User,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import type { DatingProfile, TraitKey, CardProfile } from "@/lib/dating/types";
 import { TRAIT_DESCRIPTIONS, TRAIT_LABELS, TRAITS } from "@/lib/dating/constants";
+import { isMutualMatch } from "@/lib/dating/compat";
 import { profileTheme, rgba } from "@/lib/dating/theme";
 import { formatCount } from "@/lib/format";
 import { languageLogoUrl, logoSlugFor } from "@/lib/github/languages";
@@ -117,8 +119,12 @@ function MetricBar({ label, value, score, unit, accent, index = 0 }: { label: st
 // numbers behind it all.
 export default function ProfileView({ profile }: { profile: DatingProfile }) {
   const t = profileTheme(profile);
-  const [liked, setLiked] = useState(false);
-  const [picked, setPicked] = useState<CardProfile[]>(SWIPE_PROFILES);
+  // The deck never includes the page owner — matching yourself is not a match.
+  const deck = SWIPE_PROFILES.filter((p) => p.login !== profile.login);
+  const [likedProfile, setLikedProfile] = useState<CardProfile | null>(null);
+  const [noSpark, setNoSpark] = useState<CardProfile | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [picked, setPicked] = useState<CardProfile[]>(deck);
 
   const metaBits = [
     profile.height,
@@ -328,8 +334,8 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
           <button
             type="button"
             onClick={() => {
-              setLiked(false);
-              setPicked([...SWIPE_PROFILES].sort(() => Math.random() - 0.5));
+              setLikedProfile(null);
+              setPicked([...deck].sort(() => Math.random() - 0.5));
             }}
             className="inline-flex cursor-pointer items-center gap-2 text-[12.5px] font-semibold text-ink-soft transition hover:text-brand"
           >
@@ -341,13 +347,49 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
           onOpen={(login) => {
             window.location.href = `/${encodeURIComponent(login)}`;
           }}
-          onSwipe={(login, like) => {
-            if (like) setLiked(true);
+          onSwipe={(mate, like) => {
+            if (!like) return;
+            // Match is mutual: it happens only if the swiped profile would swipe
+            // back — sparkScore(profile, mate) at or above the threshold.
+            if (isMutualMatch(profile, mate)) {
+              if (toastTimer.current) clearTimeout(toastTimer.current);
+              setNoSpark(null);
+              setLikedProfile(mate);
+            } else {
+              setLikedProfile(null);
+              setNoSpark(mate);
+              if (toastTimer.current) clearTimeout(toastTimer.current);
+              toastTimer.current = setTimeout(() => setNoSpark(null), 2200);
+            }
           }}
         />
       </div>
 
-      {liked && <MatchOverlay profile={profile} onClose={() => setLiked(false)} />}
+      {/* no-spark toast — liked but not mutual, so no match */}
+      {noSpark && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-8 z-[70] flex justify-center px-4">
+          <div
+            className="flex items-center gap-3 rounded-full border border-[#fb5c66]/35 bg-[#191521]/95 px-5 py-3 text-[13.5px] font-medium text-white/90 shadow-[0_12px_34px_rgba(30,20,10,.4)] backdrop-blur-sm"
+            role="status"
+          >
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#fb5c66] text-[#fb5c66]">
+              <X size={14} strokeWidth={3} />
+            </span>
+            <span>
+              <span className="font-semibold text-[#fb5c66]">@{noSpark.login}</span> wasn&rsquo;t
+              into it — keep swiping
+            </span>
+          </div>
+        </div>
+      )}
+
+      {likedProfile && (
+        <MatchOverlay
+          profile={profile}
+          mate={likedProfile}
+          onClose={() => setLikedProfile(null)}
+        />
+      )}
     </div>
   );
 }
