@@ -46,9 +46,9 @@ Everything runs on the GitHub GraphQL API (`contributionsCollection` — the onl
 
 <div align="center">
 
-<a href="https://gittinder.com/torvalds"><img src="./cards/torvalds.png" width="220" alt="GitTinder card"></a>
-<a href="https://gittinder.com/pewdiepie-archdaemon"><img src="./cards/pewdiepie-archdaemon.png" width="220" alt="GitTinder card"></a>
-<a href="https://gittinder.com/akitaonrails"><img src="./cards/akitaonrails.png" width="220" alt="GitTinder card"></a>
+<a href="https://git-tinder-mu.vercel.app/torvalds"><img src="./cards/torvalds.png" width="220" alt="GitTinder card"></a>
+<a href="https://git-tinder-mu.vercel.app/pewdiepie-archdaemon"><img src="./cards/pewdiepie-archdaemon.png" width="220" alt="GitTinder card"></a>
+<a href="https://git-tinder-mu.vercel.app/akitaonrails"><img src="./cards/akitaonrails.png" width="220" alt="GitTinder card"></a>
 
 <br/>
 
