@@ -83,6 +83,8 @@ function DatingCard({ profile }: { profile: CardProfile }) {
       <img
         src={profile.avatarUrl}
         onError={onAvatarError}
+        onDragStart={(e) => e.preventDefault()}
+        draggable={false}
         alt={profile.login}
         crossOrigin="anonymous"
         style={{
@@ -265,6 +267,8 @@ function DatingCard({ profile }: { profile: CardProfile }) {
                 <img
                   src={logo}
                   crossOrigin="anonymous"
+                  draggable={false}
+                  onDragStart={(e) => e.preventDefault()}
                   alt=""
                   style={{ width: "3.6cqw", height: "3.6cqw", objectFit: "contain" }}
                 />

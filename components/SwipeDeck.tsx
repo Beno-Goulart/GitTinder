@@ -23,13 +23,12 @@ export interface DeckCardHandle {
 
 interface CardProps {
   profile: CardProfile;
-  index: number;
   onDecision: (like: boolean) => void;
   onOpen: (login: string) => void;
 }
 
 const DeckCard = forwardRef<DeckCardHandle, CardProps>(function DeckCard(
-  { profile, index, onDecision, onOpen },
+  { profile, onDecision, onOpen },
   ref,
 ) {
   const [drag, setDrag] = useState<{ x: number; y: number } | null>(null);
@@ -79,7 +78,10 @@ const DeckCard = forwardRef<DeckCardHandle, CardProps>(function DeckCard(
     <div
       className="absolute inset-0"
       style={{
-        zIndex: 20 - index,
+        // Fixed z-index above the stack echoes: with a large deck, `20 - index`
+        // goes negative and the card paints behind the (z-auto) echo tiles —
+        // they show as a white wash over the card and swallow the pointer drag.
+        zIndex: 10,
         transform: drag ? `translate(${drag.x}px, ${drag.y * 0.35}px) rotate(${tilt}deg)` : "none",
         transition: drag ? "none" : "transform .35s cubic-bezier(.2,.8,.2,1)",
         pointerEvents: drag ? "none" : "auto",
@@ -162,10 +164,11 @@ export default function SwipeDeck({
         {queue.slice(-4, -1).map((p, i) => (
           <div
             key={p.login}
-            className="absolute inset-0 rounded-[10cqw] border border-line bg-surface/40"
+            className="pointer-events-none absolute inset-0 rounded-[10cqw] border border-line bg-surface/40"
             style={{
               transform: `scale(${1 - (i + 1) * 0.035}) translateY(${(i + 1) * 10}px)`,
               opacity: 0.4 - i * 0.1,
+              zIndex: 1,
             }}
             aria-hidden
           />
@@ -179,7 +182,6 @@ export default function SwipeDeck({
           ref={topRef}
           key={top.login}
           profile={top}
-          index={queue.length}
           onDecision={(like) => {
             setVerdicts((v) => [...v, { login: top.login, like }]);
             setQueue((q) => q.slice(0, -1));
