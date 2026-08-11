@@ -40,6 +40,7 @@ export async function GET(req: Request) {
     return redirect(`/${encodeURIComponent(user.login)}`);
   } catch (err) {
     console.error("[oauth-callback] fetch user failed:", err);
-    return fail("user");
+    const status = String((err as Error).message).match(/HTTP (\d+)/)?.[1];
+    return fail(status ? `user-${status}` : "user");
   }
 }

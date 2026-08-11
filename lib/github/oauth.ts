@@ -87,7 +87,12 @@ export async function fetchOauthUser(token: string): Promise<OAuthUser> {
       "X-GitHub-Api-Version": "2022-11-28",
     },
   });
-  if (!res.ok) throw new Error("GitHub didn't return the logged-in user.");
+  if (!res.ok) {
+    const snippet = (await res.text().catch(() => "")).slice(0, 160);
+    throw new Error(
+      `GitHub didn't return the logged-in user (HTTP ${res.status}): ${snippet}`,
+    );
+  }
   const body = (await res.json()) as {
     login?: string;
     name?: string | null;
