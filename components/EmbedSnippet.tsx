@@ -2,12 +2,15 @@
 
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { Check, Copy } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 // A copyable HTML snippet for embedding a profile's GitTinder card anywhere —
 // an <img> pointing at gittinder.com/<user>.png (the Satori-rendered card PNG).
 // `origin` is resolved on the client so dev/preview links point at themselves;
 // useSyncExternalStore keeps the server snapshot and the first client render
 // identical (no hydration mismatch), then swaps in the real origin after mount.
+// The snippet honors the visitor's theme: copying it in dark mode emits
+// ?theme=dark so the embedded card matches.
 
 interface Props {
   login: string;
@@ -20,11 +23,13 @@ const getServerOrigin = () => "https://gittinder.com";
 export default function EmbedSnippet({ login, name }: Props) {
   const [copied, setCopied] = useState(false);
   const origin = useSyncExternalStore(subscribe, () => window.location.origin, getServerOrigin);
+  const dark = useTheme();
 
   const snippet = useMemo(() => {
     const alt = `${name || login} — rated on GitTinder`;
-    return `<img src="${origin}/${encodeURIComponent(login)}.png" alt="${alt}" width="405" height="567" />`;
-  }, [login, name, origin]);
+    const theme = dark ? "?theme=dark" : "";
+    return `<img src="${origin}/${encodeURIComponent(login)}.png${theme}" alt="${alt}" width="405" height="567" />`;
+  }, [login, name, origin, dark]);
 
   const copy = async () => {
     try {

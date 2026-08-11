@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { scoutProfile } from "@/lib/scout";
 import { checkScoutRateLimit } from "@/lib/rateLimit";
-import { renderCardImage } from "@/lib/og/renderCard";
+import { renderCardImage, type CardTheme } from "@/lib/og/renderCard";
 import { loadCardFonts } from "@/lib/og/card";
 
 export const runtime = "nodejs";
@@ -12,14 +12,18 @@ const H = Math.round((W * 7) / 5);
 // Embeddable card image: gittinder.com/<user>.png (via the next.config rewrite) -> here.
 // The card is rendered on demand to match the in-app DatingCard (lib/og/renderCard)
 // and cached hard at the CDN, so there's no object store to keep in sync or pay for.
-// A failed scout (no such user), a render error, OR a rate-limited IP falls back to
-// a small branded hint — no GitHub budget is spent either way.
+// ?theme=dark renders the dark-mode palette (the in-app share/download appends it
+// when the visitor is in dark mode); the default stays light for OG crawlers, which
+// have no theme. A failed scout (no such user), a render error, OR a rate-limited IP
+// falls back to a small branded hint — no GitHub budget is spent either way.
 export async function GET(req: Request, { params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
+  const theme: CardTheme =
+    new URL(req.url).searchParams.get("theme") === "dark" ? "dark" : "light";
   if (!(await checkScoutRateLimit()).allowed) return fallback(username);
   try {
     const profile = await scoutProfile(username);
-    return await renderCardImage(profile);
+    return await renderCardImage(profile, theme);
   } catch {
     return fallback(username);
   }

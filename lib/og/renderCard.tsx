@@ -20,6 +20,34 @@ const cardH = (w: number) => Math.round((w * 7) / 5); // native 5:7 aspect
 // OG image so both render the exact same portrait card.
 export const CARD_SIZE = { width: EMBED_W, height: cardH(EMBED_W) }; // 810×1134
 
+// The card PNG can be requested in either flavor (?theme=dark), matching the
+// site's paper-and-ink dark palette from globals.css. OG unfurls (no viewer
+// theme) always get the light default.
+export type CardTheme = "light" | "dark";
+
+const CARD_PALETTES = {
+  light: {
+    paper: "#fffdf8",
+    ink: "#191521",
+    meta: "rgba(25,21,33,.7)",
+    bio: "rgba(25,21,33,.84)",
+    chipBg: "rgba(255,253,248,.92)",
+    pillBg: "rgba(255,253,248,.88)",
+    plate:
+      "linear-gradient(to top, #fffdf8 0%, rgba(255,253,248,.98) 34%, rgba(255,253,248,.92) 52%, rgba(255,253,248,0) 100%)",
+  },
+  dark: {
+    paper: "#1c1724", // --color-panel
+    ink: "#f5eefb", // --color-ink
+    meta: "#b2a6c1", // --color-ink-soft
+    bio: "#d8cee3", // --color-ink-dim
+    chipBg: "rgba(30,24,39,.92)", // --color-surface
+    pillBg: "rgba(30,24,39,.88)",
+    plate:
+      "linear-gradient(to top, #1c1724 0%, rgba(28,23,36,.98) 34%, rgba(28,23,36,.92) 52%, rgba(28,23,36,0) 100%)",
+  },
+} as const;
+
 const AVATAR_FALLBACK =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
@@ -74,10 +102,16 @@ export async function loadCardAssets(profile: DatingProfile, w: number) {
 export type CardAssets = Awaited<ReturnType<typeof loadCardAssets>>;
 
 // The dating card as a Satori element at width `w` (height derived from aspect).
-export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) {
+export function cardTree(
+  profile: DatingProfile,
+  assets: CardAssets,
+  w: number,
+  theme: CardTheme = "light",
+) {
   const H = cardH(w);
   const cqw = (n: number) => (n / 100) * w;
   const t = profileTheme(profile);
+  const p = CARD_PALETTES[theme];
   const displayName = cardDisplayName(profile.name || profile.login).toUpperCase();
   const metaBits = [
     profile.height,
@@ -88,11 +122,8 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
   const radius = Math.round(cqw(10));
   const cardMask = roundedCardMaskDataUri(w, H, radius);
 
-  const PAPER = "#fffdf8";
-  const INK = "#191521";
-
   return (
-    <div style={{ width: w, height: H, display: "flex", position: "relative", background: PAPER, fontFamily: "DINPro", overflow: "hidden", borderRadius: cqw(10), maskImage: `url("${cardMask}")`, WebkitMaskImage: `url("${cardMask}")`, maskSize: "100% 100%", maskRepeat: "no-repeat" }}>
+    <div style={{ width: w, height: H, display: "flex", position: "relative", background: p.paper, fontFamily: "DINPro", overflow: "hidden", borderRadius: cqw(10), maskImage: `url("${cardMask}")`, WebkitMaskImage: `url("${cardMask}")`, maskSize: "100% 100%", maskRepeat: "no-repeat" }}>
       {/* photo — full-bleed top */}
       <img
         alt=""
@@ -102,7 +133,7 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
         style={{ position: "absolute", left: 0, top: 0, width: w, height: `${62}%`, objectFit: "cover", objectPosition: "50% 18%" }}
       />
 
-      {/* paper plate — text zone fades to white over the photo */}
+      {/* paper plate — text zone fades to the card color over the photo */}
       <div
         style={{
           position: "absolute",
@@ -110,8 +141,7 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
           bottom: 0,
           width: w,
           height: `${72}%`,
-          backgroundImage:
-            "linear-gradient(to top, #fffdf8 0%, rgba(255,253,248,.98) 34%, rgba(255,253,248,.92) 52%, rgba(255,253,248,0) 100%)",
+          backgroundImage: p.plate,
         }}
       />
 
@@ -145,7 +175,7 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
           padding: `${cqw(1.1)}px ${cqw(2.6)}px`,
           borderRadius: cqw(4),
           border: `1px solid ${rgba(t.accent, 0.65)}`,
-          backgroundColor: "rgba(255,253,248,.88)",
+          backgroundColor: p.pillBg,
           fontFamily: "DINPro",
           fontWeight: 700,
           fontSize: cqw(2.9),
@@ -159,7 +189,7 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
 
       {/* name + age */}
       <div style={{ ...at(6.2, 57), display: "flex", alignItems: "center", width: `${88}%` }}>
-        <div style={{ display: "flex", alignItems: "baseline", fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(8.8), lineHeight: 1, color: INK, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>
+        <div style={{ display: "flex", alignItems: "baseline", fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(8.8), lineHeight: 1, color: p.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>
           {displayName}, {profile.age}
         </div>
         {profile.verified && (
@@ -168,12 +198,12 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
       </div>
 
       {/* meta row */}
-      <div style={{ ...at(6.3, 65.5), width: `${88}%`, fontFamily: "DINPro", fontWeight: 500, fontSize: cqw(3.5), color: "rgba(25,21,33,.7)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+      <div style={{ ...at(6.3, 65.5), width: `${88}%`, fontFamily: "DINPro", fontWeight: 500, fontSize: cqw(3.5), color: p.meta, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
         {metaBits}
       </div>
 
       {/* bio — clipped to the three-line zone */}
-      <div style={{ ...at(6.3, 69.6), width: `${87.4}%`, height: cqw(16.5), overflow: "hidden", fontFamily: "DINPro", fontSize: cqw(4), lineHeight: 1.34, color: "rgba(25,21,33,.84)" }}>
+      <div style={{ ...at(6.3, 69.6), width: `${87.4}%`, height: cqw(16.5), overflow: "hidden", fontFamily: "DINPro", fontSize: cqw(4), lineHeight: 1.34, color: p.bio }}>
         {profile.bio.slice(0, 3).join(" ")}
       </div>
 
@@ -182,7 +212,7 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
         {profile.interests.slice(0, 3).map((lang, i) => (
           <div
             key={lang}
-            style={{ display: "flex", alignItems: "center", gap: cqw(1.1), padding: `${cqw(1.1)}px ${cqw(2.4)}px ${cqw(1.1)}px ${cqw(1.6)}px`, borderRadius: cqw(4), backgroundColor: t.chipBg, fontFamily: "DINPro", fontWeight: 600, fontSize: cqw(3), color: "#5d5468", whiteSpace: "nowrap" }}
+            style={{ display: "flex", alignItems: "center", gap: cqw(1.1), padding: `${cqw(1.1)}px ${cqw(2.4)}px ${cqw(1.1)}px ${cqw(1.6)}px`, borderRadius: cqw(4), backgroundColor: p.chipBg, fontFamily: "DINPro", fontWeight: 600, fontSize: cqw(3), color: p.meta, whiteSpace: "nowrap" }}
           >
             {assets.logos[i] && (
               <img alt="" src={assets.logos[i] as string} style={{ width: cqw(3.6), height: cqw(3.6), objectFit: "contain" }} />
@@ -193,10 +223,10 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
       </div>
 
       {/* signature — maker's mark + handle */}
-      <div style={{ ...at(6.3, 95), fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(3), letterSpacing: cqw(0.26), color: INK, opacity: 0.5 }}>
+      <div style={{ ...at(6.3, 95), fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(3), letterSpacing: cqw(0.26), color: p.ink, opacity: 0.5 }}>
         GITTINDER.COM
       </div>
-      <div style={{ position: "absolute", right: `${6}%`, top: `${95}%`, display: "flex", fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(3), letterSpacing: cqw(0.1), color: INK, opacity: 0.5 }}>
+      <div style={{ position: "absolute", right: `${6}%`, top: `${95}%`, display: "flex", fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(3), letterSpacing: cqw(0.1), color: p.ink, opacity: 0.5 }}>
         @{profile.login}
       </div>
     </div>
@@ -204,9 +234,12 @@ export function cardTree(profile: DatingProfile, assets: CardAssets, w: number) 
 }
 
 // The standalone embeddable card image: gittinder.com/<user>.png.
-export async function renderCardImage(profile: DatingProfile): Promise<ImageResponse> {
+export async function renderCardImage(
+  profile: DatingProfile,
+  theme: CardTheme = "light",
+): Promise<ImageResponse> {
   const assets = await loadCardAssets(profile, EMBED_W);
-  return new ImageResponse(cardTree(profile, assets, EMBED_W), {
+  return new ImageResponse(cardTree(profile, assets, EMBED_W, theme), {
     width: EMBED_W,
     height: cardH(EMBED_W),
     fonts: await loadCardFonts(),

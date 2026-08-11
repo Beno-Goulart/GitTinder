@@ -54,6 +54,7 @@
   --gt-glow-flood: rgba(255, 244, 224, 0.35);
   --gt-glow-floor: rgba(120, 90, 40, 0.12);
   --gt-grid-dim: #d8c8a2;
+  --gt-card-shadow: rgba(70, 50, 20, 0.22); /* dating-card drop shadow, warm in light */
 }
 
 /* ---- dark mode — the same paper & ink identity, turned down ---- */
@@ -75,6 +76,7 @@
   --gt-glow-flood: rgba(255, 90, 110, 0.2);
   --gt-glow-floor: rgba(255, 70, 85, 0.1);
   --gt-grid-dim: #3a3150;
+  --gt-card-shadow: rgba(0, 0, 0, 0.55); /* deeper, neutral drop in dark mode */
 }
 
 @layer base {

@@ -26,8 +26,11 @@ const FONT_COND = "var(--font-din-cond), 'Saira Condensed', sans-serif";
 const FONT_BOLD = "var(--font-din-bold), 'Saira Condensed', sans-serif";
 const FONT_MEDIUM = "var(--font-din-medium), 'Saira Condensed', sans-serif";
 
-const PAPER = "#fffdf8";
-const INK = "#191521";
+// The card reads the design tokens, so `.dark` re-tints the whole plate: paper
+// becomes the plum panel, ink flips to the pale lavender. The photo and the
+// coral seal are theme-agnostic on purpose.
+const PAPER = "var(--color-panel)";
+const INK = "var(--color-ink)";
 
 const CARD_MASK = roundedCardMaskDataUri(810, 1134, Math.round(810 * CARD_CORNER_RADIUS));
 
@@ -54,8 +57,8 @@ function DatingCard({ profile }: { profile: CardProfile }) {
     borderRadius: 0,
     overflow: "hidden",
     background: PAPER,
-    border: "1px solid rgba(25,21,33,.08)",
-    filter: `drop-shadow(0 7cqw 12cqw rgba(70,50,20,.22)) drop-shadow(0 0 6cqw ${t.glow})`,
+    border: "1px solid color-mix(in srgb, var(--color-ink) 8%, transparent)",
+    filter: `drop-shadow(0 7cqw 12cqw var(--gt-card-shadow)) drop-shadow(0 0 6cqw ${t.glow})`,
     maskImage: `url("${CARD_MASK}")`,
     WebkitMaskImage: `url("${CARD_MASK}")`,
     maskSize: "100% 100%",
@@ -98,7 +101,7 @@ function DatingCard({ profile }: { profile: CardProfile }) {
         }}
       />
 
-      {/* paper plate — the bottom text zone fades to white over the photo */}
+      {/* paper plate — the bottom text zone fades to the panel color over the photo */}
       <div
         aria-hidden
         style={{
@@ -108,7 +111,7 @@ function DatingCard({ profile }: { profile: CardProfile }) {
           width: "100%",
           height: "72%",
           background:
-            "linear-gradient(to top, #fffdf8 0%, rgba(255,253,248,.98) 34%, rgba(255,253,248,.92) 52%, rgba(255,253,248,0) 100%)",
+            "linear-gradient(to top, var(--color-panel) 0%, color-mix(in srgb, var(--color-panel) 98%, transparent) 34%, color-mix(in srgb, var(--color-panel) 92%, transparent) 52%, transparent 100%)",
         }}
       />
 
@@ -156,7 +159,7 @@ function DatingCard({ profile }: { profile: CardProfile }) {
           padding: "1.1cqw 2.6cqw",
           borderRadius: "4cqw",
           border: `1px solid ${rgba(t.accent, 0.65)}`,
-          background: "rgba(255,253,248,.88)",
+          background: "color-mix(in srgb, var(--color-panel) 88%, transparent)",
           backdropFilter: "blur(4px)",
           fontFamily: FONT_MEDIUM,
           fontSize: "2.9cqw",
@@ -203,7 +206,7 @@ function DatingCard({ profile }: { profile: CardProfile }) {
           fontFamily: FONT_MEDIUM,
           fontSize: "3.5cqw",
           fontWeight: 500,
-          color: "rgba(25,21,33,.7)",
+          color: "var(--color-ink-soft)",
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -221,7 +224,7 @@ function DatingCard({ profile }: { profile: CardProfile }) {
           fontSize: "4cqw",
           fontWeight: 400,
           lineHeight: 1.34,
-          color: "rgba(25,21,33,.84)",
+          color: "var(--color-ink-dim)",
           display: "-webkit-box",
           WebkitLineClamp: 3,
           WebkitBoxOrient: "vertical",
@@ -253,13 +256,13 @@ function DatingCard({ profile }: { profile: CardProfile }) {
                 gap: "1.1cqw",
                 padding: "1.1cqw 2.4cqw 1.1cqw 1.6cqw",
                 borderRadius: "4cqw",
-                background: t.chipBg,
-                border: "1px solid rgba(25,21,33,.1)",
+                background: "color-mix(in srgb, var(--color-panel) 92%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--color-ink) 10%, transparent)",
                 backdropFilter: "blur(4px)",
                 fontFamily: FONT_MEDIUM,
                 fontSize: "3cqw",
                 fontWeight: 600,
-                color: "#5d5468",
+                color: "var(--color-ink-soft)",
                 whiteSpace: "nowrap",
               }}
             >

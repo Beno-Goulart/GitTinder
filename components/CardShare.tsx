@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, Download, Link2, Share2 } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 // The "SHARE THE CARD" control — a split button. The main half shares the card
 // like before (native Web Share sheet when available, otherwise copy the URL);
 // the caret opens the share options: copy the link or download the card image
-// (the same PNG the embed uses, gittinder.com/<user>.png).
+// (the same PNG the embed uses, gittinder.com/<user>.png). The downloaded image
+// follows the current theme — ?theme=dark when the app is in dark mode.
 
 interface Props {
   path: string;
@@ -21,6 +23,7 @@ export default function CardShare({ path, title, text, login, className }: Props
   const [notice, setNotice] = useState<null | "copied" | "saved">(null);
   const root = useRef<HTMLDivElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dark = useTheme();
 
   useEffect(() => {
     if (!open) return;
@@ -76,7 +79,10 @@ export default function CardShare({ path, title, text, login, className }: Props
   const copyLink = () => copyText(new URL(path, window.location.href).href);
 
   const downloadImage = async () => {
-    const url = new URL(`/${encodeURIComponent(login)}.png`, window.location.href).href;
+    const url = new URL(
+      `/${encodeURIComponent(login)}.png${dark ? "?theme=dark" : ""}`,
+      window.location.href,
+    ).href;
     try {
       const res = await fetch(url);
       const blob = await res.blob();
