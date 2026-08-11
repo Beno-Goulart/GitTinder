@@ -41,6 +41,8 @@
 
 GitTinder turns any GitHub account into a **Tinder-style dating profile**, read straight from real GitHub stats — no self-reporting, no surveys. A match score, a tier, a generated bio, passion tags, a vibe and the six traits that explain it all. You can also test the **chemistry between two accounts** (`/vs/a/b`) and share your profile as a live card image (`/<user>.png`) that re-matches itself as your stats change.
 
+There's no sign-up wall: **"Match your own GitHub"** signs you in with a single OAuth click and drops you straight on your own card (no session, no stored data), you can **search by real name** or hit **Surprise me**, and the whole thing flips into a **dark mode** that the cards follow too.
+
 Everything runs on the GitHub GraphQL API (`contributionsCollection` — the only endpoint that returns real per-year commit / PR / review / issue / calendar data), so the "personality" is anchored to actual numbers, never invented.
 
 ## Preview
@@ -73,6 +75,10 @@ Everything runs on the GitHub GraphQL API (`contributionsCollection` — the onl
 | **OG unfurls** | Every profile and every pair unfurls with its exact rating on Twitter / Slack / Discord |
 | **Raw JSON API** | `/api/card/<user>` returns the full scored profile |
 | **Live scout counter** | The home page shows an all-time "profiles matched" tally (Redis) |
+| **Match your own GitHub** | A one-click OAuth button that reads your login, discards the token and lands you on your own card — no session, no stored data |
+| **Search by name** | Type a real name instead of a username — suggestions come live from GitHub's user search (10 min cache) |
+| **Surprise me** | A random profile from a hand-picked pool when you can't decide who to match with |
+| **Dark mode** | A paper-and-ink dark palette across the app, synced with your system preference; the card image follows via `?theme=dark` |
 | **Tokenless demo** | With no token configured, the baked sample profiles (`torvalds`, `ThePrimeagen`, `pewdiepie-archdaemon`, `t3dotgg`) still resolve so the app stays explorable |
 
 ## Quick Start
@@ -92,13 +98,14 @@ Environment:
 | `GITHUB_TOKEN` | ✓ (or `GITHUB_TOKENS`) | a GitHub token for the GraphQL API (goes from ~60 unauthenticated req/hr to ~5,000) |
 | `GITHUB_TOKENS` | (alternative) | a comma-separated pool — each scout is hash-sharded to one token, with a single failover retry on rate limits |
 | `REDIS_URL` | ✗ | optional read-through cache (2h TTL) + the scout counter. Without it, every scout hits GitHub live |
+| `GITHUB_OAUTH_CLIENT_ID` / `GITHUB_OAUTH_CLIENT_SECRET` | ✗ | GitHub OAuth App credentials — enable "Match your own GitHub". Without them the button is hidden |
 
 ## URLs
 
 | | |
 |---|---|
 | **`gittinder.com/<username>`** | the full scout report |
-| **`gittinder.com/<username>.png`** | your card, as a live image |
+| **`gittinder.com/<username>.png`** | your card, as a live image (append `?theme=dark` for the dark palette) |
 | **`gittinder.com/api/card/<username>`** | the raw profile JSON |
 | **`gittinder.com/vs/a/b`** | the chemistry report between two accounts |
 
@@ -214,7 +221,7 @@ With its own tiers: **MATCH MADE IN MERGE** (90+) → **SPARKS FLYING** (78) →
 
 ## The Card
 
-One layout, three surfaces: the live `<DatingCard/>` in the app, the embeddable `/<user>.png` and the OG image are all the same design — photo up top, match score top-left, tier pill top-right, bio and language "interests" over a gradient plate. The PNG is re-created server-side with **Satori** (`next/og`) so it scales 1:1 with the in-app card and caches at the CDN — no object store to keep in sync. A failed scout renders a small branded hint instead of a broken image.
+One layout, three surfaces: the live `<DatingCard/>` in the app, the embeddable `/<user>.png` and the OG image are all the same design — photo up top, match score top-left, tier pill top-right, bio and language "interests" over a gradient plate. The PNG is re-created server-side with **Satori** (`next/og`) so it scales 1:1 with the in-app card and caches at the CDN — no object store to keep in sync. A failed scout renders a small branded hint instead of a broken image. The card has a **light and dark palette**: the app version follows the theme toggle, and the PNG reads a `?theme=dark` query string — so your README badge can match your profile page.
 
 ## Deploy
 
@@ -224,7 +231,11 @@ Standard Next.js on [Vercel](https://vercel.com) — the repo is a single app wi
 # Push, then in the Vercel dashboard set the environment variables:
 GITHUB_TOKEN=your_token          # or GITHUB_TOKENS=token1,token2
 REDIS_URL=redis://your-redis     # optional
+GITHUB_OAUTH_CLIENT_ID=...       # optional — enables "Match your own GitHub"
+GITHUB_OAUTH_CLIENT_SECRET=...
 ```
+
+To enable the one-click sign-in, create a GitHub **OAuth App** (Settings → Developer settings → OAuth Apps) with a callback URL of `https://your-app.vercel.app/api/auth/callback`, then set the client ID and secret above.
 
 No `vercel.json` needed — everything lives in `next.config.ts`.
 
@@ -260,6 +271,10 @@ gittinder/
 │   │   └── opengraph-image.tsx     # pair unfurl
 │   ├── api/card/[username]/route.ts    # raw profile JSON
 │   ├── api/card-image/[username]/route.tsx
+│   ├── api/search/route.ts         # by-name user search (10 min cache)
+│   ├── api/auth/                   # one-click OAuth sign-in
+│   │   ├── login/route.ts          # starts the GitHub flow
+│   │   └── callback/route.ts       # exchanges code → /<login> (no session)
 │   ├── robots.ts · sitemap.ts · not-found.tsx · error.tsx
 │   └── fonts/                      # Bebas Neue + DINPro
 ├── components/
@@ -267,7 +282,10 @@ gittinder/
 │   ├── ProfileView.tsx             # the scout report
 │   ├── SampleDeck.tsx · SwipeDeck.tsx · TraitRadar.tsx · MatchOverlay.tsx
 │   ├── CompatView.tsx · CompatPicker.tsx   # the /vs report + picker
+│   ├── ThemeToggle.tsx · CardShare.tsx · EmbedSnippet.tsx
 │   └── ScoutForm.tsx · LoadingScreen.tsx · AppShell.tsx · Background.tsx
+├── hooks/
+│   └── useTheme.ts                 # dark mode, synced with the system preference
 ├── lib/
 │   ├── scout.ts                    # username → profile (Redis read-through + single-flight)
 │   ├── analytics.ts                # scout counter (Redis)
@@ -279,6 +297,8 @@ gittinder/
 │   │   └── bio.ts · theme.ts · types.ts
 │   ├── github/                     # GitHub GraphQL client + signals + token pool
 │   │   ├── client.ts · signals.ts · tokens.ts · languages.ts · stars.ts · samples.ts
+│   │   ├── oauth.ts                # OAuth URLs, token exchange, config guard
+│   │   └── search.ts               # by-name user search
 │   └── og/                         # Satori re-renders of the card + pair report
 │       ├── renderCard.tsx · renderCompat.tsx · card.tsx
 ├── cards/                          # sample card images used in this README
