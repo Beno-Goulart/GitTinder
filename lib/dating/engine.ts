@@ -9,7 +9,7 @@ import {
   VERIFIED,
   tierFor,
 } from "./constants";
-import { buildBio, buildTags, lookingFor, onlineState } from "./bio";
+import { buildBio, buildTags, lookingFor, onlineState, profileSeed } from "./bio";
 import type { DatingProfile, Metric, Signals, Tier, TraitKey, TraitShape, Traits, Vibe } from "./types";
 
 const Lg = (x: number) => Math.log10(Math.max(0, x) + 1);
@@ -18,6 +18,8 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp = (x: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, x));
 const mean = (a: number[]) => a.reduce((s, x) => s + x, 0) / a.length;
 const vals = (t: TraitShape) => TRAITS.map((k) => t[k]);
+const oneOf = (seed: number, salt: number, variants: string[]): string =>
+  variants[(seed + salt) % variants.length];
 
 // --- §2 — raw trait estimates, tuned so the six land on a comparable scale ---
 function rawTraits(s: Signals): Traits {
@@ -101,36 +103,71 @@ function legacyScore(s: Signals): number {
 
 // The vibe ("archetype") is read from the trait shape: a star spike scouts an
 // influencer, a review-heavy lean a reviewer; a strong, balanced shape scouts
-// "the catch".
+// "the catch". Each archetype has a few phrasings picked from the profile seed,
+// so the same account always reads the same blurb.
 const VIBES: Record<Vibe, { name: string; blurb: (s: Signals) => string }> = {
   influencer: {
     name: "The Influencer",
-    blurb: () => "Star power off the charts. Everyone swipes right on a repo with a blue checkmark.",
+    blurb: (s) =>
+      oneOf(profileSeed(s.login), 20, [
+        "Star power off the charts. Everyone swipes right on a repo with a blue checkmark.",
+        "The stars have spoken — and they said yes. A walking highlight reel.",
+        "Repos that trend, a name that travels. The algorithm blushes.",
+      ]),
   },
   butterfly: {
     name: "The Social Butterfly",
     blurb: (s) =>
-      `A network machine — ${s.prs_to_others} PRs and ${s.reviews} reviews this year, always in the thread.`,
+      oneOf(profileSeed(s.login), 21, [
+        `A network machine — ${s.prs_to_others} PRs and ${s.reviews} reviews this year, always in the thread.`,
+        `Threads everywhere — ${s.prs_to_others} PRs opened, ${s.reviews} reviews given. Everyone knows them.`,
+        `The comment section is their living room — ${s.reviews} reviews and ${s.prs_to_others} PRs this year.`,
+      ]),
   },
   polyglot: {
     name: "The Polyglot",
-    blurb: (s) => `Speaks ${s.languages} languages and will absolutely notice your missing semicolon.`,
+    blurb: (s) =>
+      oneOf(profileSeed(s.login), 22, [
+        `Speaks ${s.languages} languages and will absolutely notice your missing semicolon.`,
+        `${s.languages} languages under the belt — the romance ones included, allegedly.`,
+        `A stack for every occasion — ${s.languages} of them. Never bored, never boring.`,
+      ]),
   },
   longhauler: {
     name: "The Long-Hauler",
-    blurb: (s) => `${s.active_years} years in and still shipping. Built to last — emotionally available by commit.`,
+    blurb: (s) =>
+      oneOf(profileSeed(s.login), 23, [
+        `${s.active_years} years in and still shipping. Built to last — emotionally available by commit.`,
+        `${s.active_years} years, one account, zero ghosting. This one's in it for keeps.`,
+        `Marathon legs on a sprint world — ${s.active_years} active years and counting.`,
+      ]),
   },
   reviewer: {
     name: "The Reviewer",
-    blurb: (s) => `Leaves thoughtful reviews and kind comments. A gentleman (of the codebase), ${s.reviews} this year.`,
+    blurb: (s) =>
+      oneOf(profileSeed(s.login), 24, [
+        `Leaves thoughtful reviews and kind comments. A gentleman (of the codebase), ${s.reviews} this year.`,
+        `Kind in reviews, sharp in code — ${s.reviews} pull requests given the full treatment.`,
+        `Reads everything carefully and replies with care. ${s.reviews} reviews this year prove it.`,
+      ]),
   },
   warrior: {
     name: "The Weekend Warrior",
-    blurb: (s) => `Always up for something — especially something at 2am. ${s.active_days_recent} days online this year.`,
+    blurb: (s) =>
+      oneOf(profileSeed(s.login), 25, [
+        `Always up for something — especially something at 2am. ${s.active_days_recent} days online this year.`,
+        `Weekends, weekdays, 2am — always somewhere shipping. ${s.active_days_recent} active days.`,
+        `That friend who's always around when it's go time. ${s.active_days_recent} days of it this year.`,
+      ]),
   },
   catch: {
     name: "The Catch",
-    blurb: () => "Balanced, committed, and almost too good to be true. It's just the algorithm.",
+    blurb: () =>
+      oneOf(profileSeed("__catch__"), 26, [
+        "Balanced, committed, and almost too good to be true. It's just the algorithm.",
+        "Good at everything, humble about most of it. The algorithm knows.",
+        "The full package, shipped and tested. Resists all edge cases.",
+      ]),
   },
 };
 

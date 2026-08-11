@@ -1,49 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
+import UserSearchInput, { type UserSearchInputHandle } from "./UserSearchInput";
 import { SAMPLE_LOGINS } from "@/lib/github/samples";
 
-const inputClass =
-  "font-mono h-14 w-full rounded-[14px] border-[1.5px] border-line bg-surface/70 pl-[34px] pr-5 text-[16px] font-medium text-ink outline-none backdrop-blur-[4px] transition focus:border-brand focus:bg-surface focus:shadow-[0_0_0_4px_rgba(255,70,85,.14),0_0_42px_rgba(255,70,85,.18)]";
-
-// Two username fields -> push to /vs/a/b. Used on the /vs landing and the
-// "NEW PAIR" flow so you can start over from any page.
+// Two username-or-name fields -> push to /vs/a/b. Used on the /vs landing and
+// the "NEW PAIR" flow so you can start over from any page. Each field does the
+// same debounced by-name search as the home form (UserSearchInput); picking a
+// suggestion fills the field with the login, and submit resolves any typed
+// name via the field's latest search round.
 export default function CompatPicker({ initial }: { initial?: string[] }) {
   const router = useRouter();
   const [a, setA] = useState(initial?.[0] ?? "");
   const [b, setB] = useState(initial?.[1] ?? "");
+  const aRef = useRef<UserSearchInputHandle>(null);
+  const bRef = useRef<UserSearchInputHandle>(null);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const loginA = a.trim().replace(/^@/, "");
-    const loginB = b.trim().replace(/^@/, "");
+    const loginA = aRef.current?.resolve(a) ?? a.trim().replace(/^@/, "");
+    const loginB = bRef.current?.resolve(b) ?? b.trim().replace(/^@/, "");
     if (!loginA || !loginB) return;
     router.push(`/vs/${encodeURIComponent(loginA)}/${encodeURIComponent(loginB)}`);
   };
-
-  const field = (
-    value: string,
-    setValue: (v: string) => void,
-    label: string,
-    placeholder: string
-  ) => (
-    <div className="relative min-w-[190px] flex-1">
-      <span className="font-mono pointer-events-none absolute left-[18px] top-1/2 -translate-y-1/2 text-[17px] font-semibold text-brand/70">
-        @
-      </span>
-      <input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder={placeholder}
-        autoComplete="off"
-        spellCheck={false}
-        aria-label={label}
-        className={inputClass}
-      />
-    </div>
-  );
 
   return (
     <div>
@@ -51,9 +32,9 @@ export default function CompatPicker({ initial }: { initial?: string[] }) {
         onSubmit={submit}
         className="mx-auto flex w-full max-w-[560px] flex-wrap items-center justify-center gap-[10px]"
       >
-        {field(a, setA, "First GitHub username", "username one")}
+        <UserSearchInput ref={aRef} value={a} onValueChange={setA} label="First GitHub username or name" placeholder="username one" />
         <span className="font-display text-[20px] leading-none text-brand">×</span>
-        {field(b, setB, "Second GitHub username", "username two")}
+        <UserSearchInput ref={bRef} value={b} onValueChange={setB} label="Second GitHub username or name" placeholder="username two" />
         <button
           type="submit"
           className="font-display gt-flame group flex h-14 items-center gap-2 rounded-[14px] px-7 text-[20px] tracking-[.06em] text-white"

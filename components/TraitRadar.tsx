@@ -146,7 +146,7 @@ export default function TraitRadar({
           >
             {value}
           </div>
-          <div className="mt-[2px] max-w-[160px] text-[9.5px] leading-snug text-ink-mute">
+          <div className="mt-[2px] max-w-[160px] whitespace-normal break-words text-[9.5px] leading-snug text-ink-mute">
             {TRAIT_DESCRIPTIONS[activeKey]}
           </div>
         </div>

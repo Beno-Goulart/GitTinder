@@ -21,6 +21,7 @@ import ShareButton from "./ShareButton";
 import SocialShare from "./SocialShare";
 import ThemeToggle from "./ThemeToggle";
 import GitHubLink from "./GitHubLink";
+import CompatRadar from "./CompatRadar";
 
 const TRAIT_ICONS: Record<TraitKey, LucideIcon> = {
   spark: Star,
@@ -38,14 +39,16 @@ const hideOnError: React.ReactEventHandler<HTMLImageElement> = (e) => {
 function Section({
   title,
   accent,
+  className,
   children,
 }: {
   title: string;
   accent: string;
+  className?: string;
   children: ReactNode;
 }) {
   return (
-    <section className="min-w-0 rounded-2xl border border-line bg-surface/60 p-[16px]">
+    <section className={`min-w-0 rounded-2xl border border-line bg-surface/60 p-[16px] ${className ?? ""}`}>
       <div className="mb-[8px] flex items-center gap-[9px]">
         <span className="h-[2px] w-[16px] rounded-full" style={{ background: accent }} />
         <h3 className="font-display text-[11px] font-bold tracking-[.22em] text-ink-faint">{title}</h3>
@@ -227,6 +230,16 @@ export default function CompatView({
 
       {/* the breakdown */}
       <div className="mt-[clamp(28px,5vw,48px)] grid grid-cols-[minmax(0,1fr)] gap-[16px] md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <Section title="THE OVERLAY" accent={t.accent} className="md:col-span-2">
+          <p className="mb-4 text-[13px] leading-[1.5] text-ink-soft">
+            Both shapes on one radar — where they overlap and where they
+            diverge. Hover an axis to compare trait by trait.
+          </p>
+          <div className="mx-auto max-w-[420px]">
+            <CompatRadar a={a} b={b} accent={t.accent} />
+          </div>
+        </Section>
+
         <Section title="THE CHEMISTRY" accent={t.accent}>
           <div className="flex flex-col gap-[14px] pt-1">
             <Meter label="Shared languages" value={t.sharedScore} accent={t.accent} index={0} />

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Inter, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // Display — ultra-condensed all-caps for the Tinder impact.
@@ -32,7 +33,7 @@ const DESCRIPTION =
   "Enter a GitHub username and get a Tinder-style dating profile rated 0–99 — match score, tier, bio and passions, scored from real GitHub stats.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gittinder.com"),
+  metadataBase: new URL(SITE_URL),
   title: TITLE,
   description: DESCRIPTION,
   keywords: [
@@ -48,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
-    url: "https://gittinder.com",
+    url: SITE_URL,
     siteName: "GitTinder",
     type: "website",
   },
