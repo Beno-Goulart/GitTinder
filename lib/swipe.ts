@@ -336,7 +336,7 @@ const BAKED: CardProfile[] = [
     interests: ["HTML"],
   },
   {
-    login: "Beno-Goulart",
+    login: "benogoulart",
     name: "Beno Goulart",
     avatarUrl: "https://avatars.githubusercontent.com/u/135740382?s=480&u=a6278490be5558a5bd0c8e3d64ca361af653ff61&v=4",
     location: "São Paulo, SP - Brazil",

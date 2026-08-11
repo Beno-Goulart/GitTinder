@@ -3,7 +3,7 @@
 export default function GitHubLink() {
   return (
     <a
-      href="https://github.com/Beno-Goulart/GitTinder"
+      href="https://github.com/benogoulart/GitTinder"
       target="_blank"
       rel="noreferrer"
       aria-label="GitTinder source on GitHub"
