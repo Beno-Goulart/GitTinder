@@ -19,6 +19,15 @@ export function oauthConfig(): OAuthConfig | null {
   const clientId = process.env.GITHUB_OAUTH_CLIENT_ID?.trim();
   const clientSecret = process.env.GITHUB_OAUTH_CLIENT_SECRET?.trim();
   if (!clientId || !clientSecret) return null;
+  // GitHub OAuth App client secrets are always 40 lowercase hex chars; a client
+  // ID never is. Catches the classic client_id/client_secret copy-paste swap,
+  // which would otherwise only surface as a confusing failure at authorize time.
+  if (/^[0-9a-f]{40}$/.test(clientId)) {
+    console.warn(
+      "[oauth] GITHUB_OAUTH_CLIENT_ID looks like a client secret (40-hex). Check the env vars.",
+    );
+    return null;
+  }
   return { clientId, clientSecret };
 }
 
