@@ -28,6 +28,7 @@ import MatchOverlay from "./MatchOverlay";
 import ShareButton from "./ShareButton";
 import CardShare from "./CardShare";
 import EmbedSnippet from "./EmbedSnippet";
+import SocialShare from "./SocialShare";
 import ThemeToggle from "./ThemeToggle";
 import GitHubLink from "./GitHubLink";
 
@@ -338,8 +339,39 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
         </div>
       </div>
 
+      {/* the sharing loop — score is known, now spread the verdict */}
+      <section className="mt-14 rounded-2xl border border-line bg-surface/40 p-[clamp(20px,4vw,36px)] text-center">
+        <h2 className="font-display text-[clamp(22px,3.4vw,30px)] tracking-[.02em]">
+          SPREAD THE <span className="gt-flame-text">VERDICT</span>.
+        </h2>
+        <p className="mx-auto mt-2 max-w-[480px] text-[14px] leading-[1.5] text-ink-soft">
+          Your card already carries the score — now make sure everyone sees it.
+          Share it, challenge a friend, or find out who you&rsquo;d match with.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <SocialShare
+            path={`/${encodeURIComponent(profile.login)}`}
+            title={`${profile.name || profile.login} — rated ${profile.match} on GitTinder`}
+            text={`${profile.name || profile.login} rated ${profile.match} on GitTinder. Is it a match?`}
+          />
+          <Link
+            href={`/vs/${encodeURIComponent(profile.login)}`}
+            className="font-display inline-flex items-center gap-2 rounded-[12px] border border-line bg-surface/60 px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-brand"
+          >
+            CHALLENGE A FRIEND ↗
+          </Link>
+          <button
+            type="button"
+            onClick={() => document.getElementById("keep-swiping")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            className="font-display inline-flex items-center gap-2 rounded-[12px] border border-line bg-surface/60 px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-brand"
+          >
+            SEE WHO MATCHES YOU ↓
+          </button>
+        </div>
+      </section>
+
       {/* the swipe deck — keep swiping */}
-      <div className="mt-16">
+      <div id="keep-swiping" className="mt-16 scroll-mt-6">
         <div className="mb-[18px] flex items-center justify-between">
           <h2 className="font-display text-[clamp(22px,3.4vw,30px)] tracking-[.02em]">
             KEEP SWIPING<span className="text-brand">.</span>

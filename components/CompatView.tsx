@@ -18,6 +18,7 @@ import { languageLogoUrl, logoSlugFor } from "@/lib/github/languages";
 import type { DatingProfile, TraitKey } from "@/lib/dating/types";
 import DatingCard from "./DatingCard";
 import ShareButton from "./ShareButton";
+import SocialShare from "./SocialShare";
 import ThemeToggle from "./ThemeToggle";
 import GitHubLink from "./GitHubLink";
 
@@ -298,6 +299,31 @@ export default function CompatView({
           </Section>
         </div>
       </div>
+
+      {/* challenge a friend — the sharing loop */}
+      <section className="mt-14 rounded-2xl border border-line bg-surface/40 p-[clamp(20px,4vw,36px)] text-center">
+        <h2 className="font-display text-[clamp(22px,3.4vw,30px)] tracking-[.02em]">
+          CHALLENGE A <span className="gt-flame-text">FRIEND</span>.
+        </h2>
+        <p className="mx-auto mt-2 max-w-[480px] text-[14px] leading-[1.5] text-ink-soft">
+          Send them this matchup and let them argue with the numbers. It&rsquo;s
+          better when they see it themselves.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <ShareButton
+            path={`/vs/${encodeURIComponent(a.login)}/${encodeURIComponent(b.login)}`}
+            label="CHALLENGE A FRIEND"
+            variant="flame"
+            title={`@${a.login} × @${b.login} — ${t.score}% chemistry on GitTinder`}
+            text={`Are @${a.login} and @${b.login} a match? ${t.score}% chemistry on GitTinder.`}
+          />
+          <SocialShare
+            path={`/vs/${encodeURIComponent(a.login)}/${encodeURIComponent(b.login)}`}
+            title={`@${a.login} × @${b.login} — ${t.score}% chemistry on GitTinder`}
+            text={`Are @${a.login} and @${b.login} a match? ${t.score}% chemistry on GitTinder.`}
+          />
+        </div>
+      </section>
 
       {/* actions */}
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
