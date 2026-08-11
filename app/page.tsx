@@ -1,6 +1,7 @@
 import Background from "@/components/Background";
 import AppShell from "@/components/AppShell";
 import { getScoutCount } from "@/lib/analytics";
+import { oauthEnabled } from "@/lib/github/oauth";
 
 // Dynamic so the live scout count is fresh per load.
 export const dynamic = "force-dynamic";
@@ -29,13 +30,18 @@ const JSON_LD = {
   ],
 };
 
-export default async function Home() {
-  const scoutCount = await getScoutCount();
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ auth?: string }>;
+}) {
+  const [scoutCount, params] = await Promise.all([getScoutCount(), searchParams]);
+  const authError = params.auth === "error";
   return (
     <div className="relative min-h-screen overflow-x-hidden text-ink">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
       <Background />
-      <AppShell scoutCount={scoutCount} />
+      <AppShell scoutCount={scoutCount} oauthEnabled={oauthEnabled()} authError={authError} />
     </div>
   );
 }

@@ -1,5 +1,27 @@
-import { SAMPLE_PROFILES } from "./github/samples";
+import { SAMPLE_LOGINS, SAMPLE_PROFILES } from "./github/samples";
 import type { CardProfile } from "./dating/types";
+
+// The "SURPRISE ME" pool — real, recognizable accounts so the home form's
+// random button always lands somewhere fun. The four showcase samples plus a
+// spread of famous devs: no need to know a single username to try the app.
+const FAMOUS_LOGINS = [
+  "sindresorhus",
+  "gaearon",
+  "tj",
+  "paulirish",
+  "addyosmani",
+  "kentcdodds",
+  "jamiebuilds",
+  "rauchg",
+  "shuding",
+  "bdougie",
+  "swyxio",
+  "nexxeln",
+  "filipedeschamps",
+  "omariosouto",
+];
+
+export const RANDOM_LOGINS: string[] = [...new Set([...SAMPLE_LOGINS, ...FAMOUS_LOGINS])];
 
 // The "KEEP SWIPING" deck — real GitHub accounts baked once so the deck needs
 // no per-view scout. The four showcase samples close the deck (the top card,
