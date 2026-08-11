@@ -33,7 +33,7 @@ const JSON_LD = {
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ auth?: string }>;
+  searchParams: Promise<{ auth?: string; reason?: string }>;
 }) {
   const [scoutCount, params] = await Promise.all([getScoutCount(), searchParams]);
   const authError = params.auth === "error";
@@ -41,7 +41,12 @@ export default async function Home({
     <div className="relative min-h-screen overflow-x-hidden text-ink">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
       <Background />
-      <AppShell scoutCount={scoutCount} oauthEnabled={oauthEnabled()} authError={authError} />
+      <AppShell
+        scoutCount={scoutCount}
+        oauthEnabled={oauthEnabled()}
+        authError={authError}
+        authReason={params.reason}
+      />
     </div>
   );
 }

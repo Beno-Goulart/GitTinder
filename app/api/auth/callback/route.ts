@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 const STATE_COOKIE = "gt_oauth_state";
 
-const fail = () => redirect("/?auth=error");
+const fail = (reason: string) => redirect(`/?auth=error&reason=${reason}`);
 
 // GitHub bounces back here with ?code + ?state. Validate the state cookie
 // (CSRF), swap the code for a token, read the user's login, and land straight
@@ -20,13 +20,26 @@ export async function GET(req: Request) {
   const expected = jar.get(STATE_COOKIE)?.value;
   jar.delete(STATE_COOKIE);
 
-  if (!code || !state || !expected || state !== expected) return fail();
+  if (!code || !state || !expected || state !== expected) {
+    console.error(
+      `[oauth-callback] state mismatch: got=${state ?? "null"} expected=${expected ? "set" : "missing"}`,
+    );
+    return fail("state");
+  }
+
+  let token: string;
+  try {
+    token = await exchangeOauthCode(code);
+  } catch (err) {
+    console.error("[oauth-callback] code exchange failed:", err);
+    return fail("exchange");
+  }
 
   try {
-    const token = await exchangeOauthCode(code);
     const user = await fetchOauthUser(token);
     return redirect(`/${encodeURIComponent(user.login)}`);
-  } catch {
-    return fail();
+  } catch (err) {
+    console.error("[oauth-callback] fetch user failed:", err);
+    return fail("user");
   }
 }

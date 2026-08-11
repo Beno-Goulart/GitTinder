@@ -15,10 +15,12 @@ export default function AppShell({
   scoutCount,
   oauthEnabled,
   authError,
+  authReason,
 }: {
   scoutCount: number | null;
   oauthEnabled: boolean;
   authError: boolean;
+  authReason?: string;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -40,7 +42,7 @@ export default function AppShell({
       <div className="mx-auto flex w-full max-w-[1180px] flex-1 items-center gap-[clamp(24px,5vw,72px)] px-[clamp(22px,5vw,56px)] max-[1120px]:flex-col max-[1120px]:gap-[34px] max-[1120px]:pb-6 max-[1120px]:pt-[clamp(40px,6vh,56px)] max-[1120px]:text-center">
         <ScoutForm
           loading={isPending}
-          error={authError ? AUTH_ERROR : null}
+          error={authError ? `${AUTH_ERROR} (reason: ${authReason ?? "unknown"})` : null}
           scoutCount={scoutCount}
           oauthEnabled={oauthEnabled}
           onScout={handleScout}
