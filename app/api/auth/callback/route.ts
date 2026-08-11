@@ -1,6 +1,10 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { exchangeOauthCode, fetchOauthUser } from "@/lib/github/oauth";
+import {
+  exchangeOauthCode,
+  fetchOauthUser,
+  type OAuthUser,
+} from "@/lib/github/oauth";
 
 export const dynamic = "force-dynamic";
 
@@ -35,12 +39,16 @@ export async function GET(req: Request) {
     return fail("exchange");
   }
 
+  let user: OAuthUser;
   try {
-    const user = await fetchOauthUser(token);
-    return redirect(`/${encodeURIComponent(user.login)}`);
+    user = await fetchOauthUser(token);
   } catch (err) {
     console.error("[oauth-callback] fetch user failed:", err);
     const status = String((err as Error).message).match(/HTTP (\d+)/)?.[1];
     return fail(status ? `user-${status}` : "user");
   }
+
+  // redirect() throws NEXT_REDIRECT by design — it MUST stay outside any
+  // try/catch, or a successful login gets misreported as a failure.
+  return redirect(`/${encodeURIComponent(user.login)}`);
 }
