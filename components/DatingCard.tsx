@@ -317,6 +317,24 @@ function DatingCard({ profile }: { profile: CardProfile }) {
         >
           @{profile.login}
         </div>
+        {/* watermark — the mascot mark, bottom-center above the signature */}
+        <img
+          src="/mascot.png"
+          alt=""
+          width={64}
+          height={64}
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          aria-hidden
+          style={{
+            ...at(50, 91.5),
+            width: "6cqw",
+            height: "6cqw",
+            transform: "translateX(-50%)",
+            objectFit: "contain",
+            opacity: 0.4,
+          }}
+        />
       </div>
     </div>
   );

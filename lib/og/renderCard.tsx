@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { profileTheme, rgba } from "@/lib/dating/theme";
 import { languageLogoUrl, logoSlugFor } from "@/lib/github/languages";
+import { mascotDataUri } from "@/lib/og/mascot";
 import { cardDisplayName } from "@/lib/text";
 import { roundedCardMaskDataUri } from "@/lib/cardMask";
 import type { DatingProfile } from "@/lib/dating/types";
@@ -229,6 +230,17 @@ export function cardTree(
       <div style={{ position: "absolute", right: `${6}%`, top: `${95}%`, display: "flex", fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(3), letterSpacing: cqw(0.1), color: p.ink, opacity: 0.5 }}>
         @{profile.login}
       </div>
+
+      {/* watermark — the mascot mark, bottom-center above the signature */}
+      {mascotDataUri() && (
+        <img
+          alt=""
+          src={mascotDataUri() as string}
+          width={Math.round(cqw(6))}
+          height={Math.round(cqw(6))}
+          style={{ position: "absolute", left: "50%", top: `${91.5}%`, width: cqw(6), height: cqw(6), transform: "translateX(-50%)", objectFit: "contain", opacity: 0.4 }}
+        />
+      )}
     </div>
   );
 }

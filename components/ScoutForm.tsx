@@ -95,8 +95,17 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
 
   return (
     <div className="min-w-0 flex-1">
-      {/* the brand face — the logo from the README */}
+      {/* the brand face — the mascot + logo from the README */}
       <div className="mb-3 flex items-center gap-3 max-[860px]:justify-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/mascot.png"
+          alt="GitTinder mascot"
+          width={44}
+          height={44}
+          draggable={false}
+          className="h-10 w-auto"
+        />
         <Image
           src="/logo.png"
           alt="GitTinder"

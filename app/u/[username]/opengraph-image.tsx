@@ -3,6 +3,7 @@ import { after } from "next/server";
 import { scoutProfile } from "@/lib/scout";
 import { checkScoutRateLimit } from "@/lib/rateLimit";
 import { recordScout } from "@/lib/analytics";
+import { mascotDataUri } from "@/lib/og/mascot";
 import { renderCardImage, CARD_SIZE } from "@/lib/og/renderCard";
 import { loadCardFonts } from "@/lib/og/card";
 
@@ -31,6 +32,7 @@ export default async function Image({ params }: { params: Promise<{ username: st
 
 async function fallback(username: string) {
   const fonts = await loadCardFonts();
+  const mascot = mascotDataUri();
   return new ImageResponse(
     (
       <div
@@ -49,6 +51,7 @@ async function fallback(username: string) {
           padding: 64,
         }}
       >
+        {mascot && <img src={mascot} alt="" width={120} height={120} style={{ marginBottom: 16, opacity: 0.9 }} />}
         <div style={{ display: "flex", color: "#ff4655", fontSize: 26, fontWeight: 700, letterSpacing: 4 }}>GITHUB × TINDER</div>
         <div style={{ display: "flex", fontSize: 84, fontWeight: 700, marginTop: 20 }}>@{username}</div>
         <div style={{ display: "flex", fontSize: 34, color: "#5d5468", marginTop: 18 }}>Get your GitHub matched, rated 0–99.</div>

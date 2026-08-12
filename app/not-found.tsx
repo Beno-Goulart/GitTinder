@@ -14,11 +14,16 @@ export default function NotFound() {
 
       <main className="relative z-[2] mx-auto flex min-h-screen max-w-[600px] flex-col items-center justify-center px-6 py-16 text-center">
         <div className="mb-1 flex items-center justify-center">
-          <svg width="110" height="110" viewBox="0 0 110 110" fill="none" aria-hidden style={{ filter: "drop-shadow(0 6px 16px rgba(255,70,85,.3))" }}>
-            <rect width="110" height="110" rx="26" fill="#fffdf8" stroke="#ff4655" strokeOpacity="0.4" />
-            <path d="M55 34 C38 20 16 26 20 48 C23 66 40 76 55 88 C70 76 87 66 90 48 C94 26 72 20 55 34 Z" fill="none" stroke="#ff4655" strokeWidth="5" strokeLinecap="round" />
-            <line x1="30" y1="64" x2="80" y2="64" stroke="#ff4655" strokeWidth="5" strokeLinecap="round" />
-          </svg>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/mascot.png"
+            alt="GitTinder mascot"
+            width={110}
+            height={110}
+            draggable={false}
+            aria-hidden
+            style={{ filter: "drop-shadow(0 6px 16px rgba(255,70,85,.3))" }}
+          />
         </div>
 
         <p className="font-display text-[12px] font-bold tracking-[.3em] text-brand">SWIPED LEFT</p>

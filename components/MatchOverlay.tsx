@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PartyPopper, X } from "lucide-react";
+import { X } from "lucide-react";
 import type { CardProfile, DatingProfile } from "@/lib/dating/types";
 import { sparkScore } from "@/lib/dating/compat";
 import DatingCard from "./DatingCard";
@@ -72,14 +72,22 @@ export default function MatchOverlay({
             <DatingCard profile={mate} />
           </div>
           <div
-            className="relative z-10 flex h-[110px] w-[110px] items-center justify-center rounded-full"
+            className="relative z-10 flex h-[110px] w-[110px] items-center justify-center overflow-hidden rounded-full"
             style={{
               background: "radial-gradient(circle at 30% 20%, #ff7a85, #ff4655)",
               boxShadow: "0 0 60px rgba(255,70,85,.55)",
               transform: "translateY(-8px)",
             }}
           >
-            <PartyPopper size={52} strokeWidth={1.8} className="text-white" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/mascot.png"
+              alt="GitTinder mascot"
+              width={76}
+              height={76}
+              draggable={false}
+              className="select-none"
+            />
           </div>
         </div>
 

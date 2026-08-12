@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Heart } from "lucide-react";
 import { punAt } from "@/lib/puns";
 
-// Full-screen loading state shown while the profile is scouted. A beating heart
+// Full-screen loading state shown while the profile is scouted. The mascot
 // pulses; a dating-git pun rotates every ~1.8s.
 export default function LoadingScreen({ login }: { login?: string }) {
   const [tick, setTick] = useState(0);
@@ -18,10 +17,13 @@ export default function LoadingScreen({ login }: { login?: string }) {
     <main className="relative z-[2] flex h-[100dvh] flex-col items-center justify-center px-6 text-center">
       <div className="relative">
         <div className="absolute inset-0 -m-8 rounded-full bg-brand/20 blur-2xl" />
-        <Heart
-          size={120}
-          strokeWidth={1.6}
-          className="relative animate-heartbeat fill-brand text-brand"
+        <img
+          src="/mascot.png"
+          alt="GitTinder mascot"
+          width={120}
+          height={120}
+          draggable={false}
+          className="animate-heartbeat relative"
         />
       </div>
 

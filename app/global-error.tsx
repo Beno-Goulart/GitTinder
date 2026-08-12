@@ -37,12 +37,12 @@ export default function GlobalError({
       >
         <div style={{ maxWidth: 460 }}>
           <Image
-            src="/logo.png"
-            alt="GitTinder"
-            width={1162}
-            height={1354}
+            src="/mascot.png"
+            alt="GitTinder mascot"
+            width={1254}
+            height={1254}
             priority
-            style={{ height: 36, width: "auto", display: "block", margin: "0 auto" }}
+            style={{ height: 48, width: "auto", display: "block", margin: "0 auto" }}
           />
           <h1 style={{ margin: "14px 0 0", fontSize: 34, fontWeight: 800, lineHeight: 1.05 }}>Ghosted</h1>
           <p style={{ margin: "14px 0 0", fontSize: 15.5, lineHeight: 1.5, color: "#5d5468" }}>

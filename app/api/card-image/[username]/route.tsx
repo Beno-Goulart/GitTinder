@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { scoutProfile } from "@/lib/scout";
 import { checkScoutRateLimit } from "@/lib/rateLimit";
+import { mascotDataUri } from "@/lib/og/mascot";
 import { renderCardImage, type CardTheme } from "@/lib/og/renderCard";
 import { loadCardFonts } from "@/lib/og/card";
 
@@ -31,6 +32,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ username
 
 async function fallback(username: string) {
   const fonts = await loadCardFonts();
+  const mascot = mascotDataUri();
   return new ImageResponse(
     (
       <div
@@ -49,6 +51,7 @@ async function fallback(username: string) {
           textAlign: "center",
         }}
       >
+        {mascot && <img src={mascot} alt="" width={120} height={120} style={{ marginBottom: 16, opacity: 0.9 }} />}
         <div style={{ display: "flex", color: "#ff4655", fontSize: 34, fontWeight: 700, letterSpacing: 6 }}>GITTINDER</div>
         <div style={{ display: "flex", fontSize: 56, fontWeight: 700, marginTop: 24 }}>@{username}</div>
         <div style={{ display: "flex", fontSize: 30, color: "#5d5468", marginTop: 22 }}>get this profile matched at</div>

@@ -8,6 +8,10 @@
   <img src="wordmark.png" alt="GitWhisper" width="250">
 </p>
 
+<p align="center">
+  <img src="mascot.png" alt="GitTinder mascot" width="120">
+</p>
+
 <sub>GitHub × Tinder — a dating profile for any GitHub account, rated 0–99.</sub>
 
 <p align="center">

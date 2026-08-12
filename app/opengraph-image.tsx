@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { loadCardFonts } from "@/lib/og/card";
+import { mascotDataUri } from "@/lib/og/mascot";
 import { SAMPLE_PROFILES } from "@/lib/github/samples";
 
 // Branded preview for the home page / bare gittinder.com links. Next wires this
@@ -14,6 +15,7 @@ const ACCENT = "#ff4655";
 export default async function Image() {
   const fonts = await loadCardFonts();
   const top = [...SAMPLE_PROFILES].sort((a, b) => b.match - a.match)[0];
+  const mascot = mascotDataUri();
 
   return new ImageResponse(
     (
@@ -33,6 +35,15 @@ export default async function Image() {
           justifyContent: "center",
         }}
       >
+        {mascot && (
+          <img
+            src={mascot}
+            alt=""
+            width={240}
+            height={240}
+            style={{ position: "absolute", right: 64, top: 56, opacity: 0.9 }}
+          />
+        )}
         <div style={{ display: "flex", color: ACCENT, fontSize: 24, fontWeight: 700, letterSpacing: 5 }}>
           GITHUB × TINDER
         </div>

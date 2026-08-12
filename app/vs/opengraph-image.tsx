@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { scoutProfile } from "@/lib/scout";
 import { checkScoutRateLimit } from "@/lib/rateLimit";
+import { mascotDataUri } from "@/lib/og/mascot";
 import { renderCompatImage, COMPAT_SIZE } from "@/lib/og/renderCompat";
 
 export const runtime = "nodejs";
@@ -28,6 +29,7 @@ export default async function Image({ params }: { params: Promise<{ users?: stri
 }
 
 function fallback() {
+  const mascot = mascotDataUri();
   return new ImageResponse(
     (
       <div
@@ -46,6 +48,7 @@ function fallback() {
           padding: 64,
         }}
       >
+        {mascot && <img src={mascot} alt="" width={120} height={120} style={{ marginBottom: 16, opacity: 0.9 }} />}
         <div style={{ display: "flex", color: "#ff4655", fontSize: 26, fontWeight: 700, letterSpacing: 4 }}>GITHUB × TINDER</div>
         <div style={{ display: "flex", fontSize: 84, fontWeight: 700, marginTop: 20 }}>CHECK THE CHEMISTRY</div>
         <div style={{ display: "flex", fontSize: 34, color: "#5d5468", marginTop: 18 }}>Two usernames. One score out of 99.</div>

@@ -22,12 +22,12 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
       <Background />
       <main className="relative z-[2] mx-auto flex min-h-screen max-w-[560px] flex-col items-center justify-center px-6 text-center">
         <Image
-          src="/logo.png"
-          alt="GitTinder"
-          width={1162}
-          height={1354}
+          src="/mascot.png"
+          alt="GitTinder mascot"
+          width={1254}
+          height={1254}
           priority
-          className="h-11 w-auto"
+          className="h-16 w-auto"
         />
         <h1 className="font-display mt-3 text-[clamp(30px,6vw,48px)] font-black leading-[.95]">The date went quiet</h1>
         <p className="mt-3 text-[15.5px] leading-[1.5] text-ink-soft">
