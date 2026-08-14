@@ -15,12 +15,14 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { DatingProfile, TraitKey, CardProfile } from "@/lib/dating/types";
-import { TRAIT_DESCRIPTIONS, TRAIT_LABELS, TRAITS } from "@/lib/dating/constants";
+import { TRAITS } from "@/lib/dating/constants";
 import { isMutualMatch } from "@/lib/dating/compat";
 import { profileTheme, rgba } from "@/lib/dating/theme";
 import { formatCount } from "@/lib/format";
 import { languageLogoUrl, logoSlugFor } from "@/lib/github/languages";
-import { SWIPE_PROFILES } from "@/lib/swipe";
+import { swipeProfiles } from "@/lib/swipe";
+import { useDict, useLocale } from "@/lib/i18n/client";
+import { fmt } from "@/lib/i18n/dicts";
 import DatingCard from "./DatingCard";
 import TraitRadar from "./TraitRadar";
 import SwipeDeck from "./SwipeDeck";
@@ -124,8 +126,10 @@ function MetricBar({ label, value, score, unit, accent, index = 0 }: { label: st
 // numbers behind it all.
 export default function ProfileView({ profile }: { profile: DatingProfile }) {
   const t = profileTheme(profile);
+  const dict = useDict();
+  const locale = useLocale();
   // The deck never includes the page owner — matching yourself is not a match.
-  const deck = SWIPE_PROFILES.filter((p) => p.login !== profile.login);
+  const deck = swipeProfiles(locale).filter((p) => p.login !== profile.login);
   const [likedProfile, setLikedProfile] = useState<CardProfile | null>(null);
   const [noSpark, setNoSpark] = useState<CardProfile | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -133,15 +137,18 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
 
   const metaBits = [
     profile.height,
-    `${profile.repos} repos`,
+    fmt(dict.ui.reposLabel, { n: profile.repos }),
     ...(profile.location ? [profile.location.split(",")[0].trim()] : []),
   ].join(" · ");
+
+  const shareTitle = fmt(dict.ui.profileShareTitle, { name: profile.name || profile.login, match: profile.match });
+  const shareText = fmt(dict.ui.profileShareText, { name: profile.name || profile.login, match: profile.match });
 
   return (
     <div className="relative z-[2] mx-auto w-full max-w-[1180px] px-[clamp(16px,4vw,40px)] pb-16">
       {/* top bar — brand home link + share */}
       <div className="flex items-center justify-between py-4">
-        <Link href="/" aria-label="GitTinder home" className="transition hover:opacity-80">
+        <Link href="/" aria-label={dict.ui.homeAria} className="transition hover:opacity-80">
           <Image
             src="/logo.png"
             alt="GitTinder"
@@ -155,9 +162,9 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
           <ThemeToggle />
           <ShareButton
             path={`/${encodeURIComponent(profile.login)}`}
-            label="SHARE"
-            title={`${profile.name || profile.login} — rated ${profile.match} on GitTinder`}
-            text={`${profile.name || profile.login} rated ${profile.match} on GitTinder. Is it a match?`}
+            label={dict.ui.share}
+            title={shareTitle}
+            text={shareText}
           />
         </div>
       </div>
@@ -176,7 +183,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
             <span className="text-[clamp(30px,5vw,42px)] leading-none tabular-nums" style={{ color: t.accent }}>
               {profile.match}%
             </span>
-            <span className="text-[11px] font-bold tracking-[.22em] text-ink-faint">MATCH</span>
+            <span className="text-[11px] font-bold tracking-[.22em] text-ink-faint">{dict.ui.match}</span>
           </div>
 
           <h1 className="font-display mt-4 text-[clamp(44px,7vw,72px)] leading-[.9] tracking-[.005em]">
@@ -241,13 +248,13 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
               href={`/vs/${encodeURIComponent(profile.login)}`}
               className="font-display gt-flame inline-flex items-center gap-2 rounded-[12px] px-6 py-3 text-[15px] tracking-[.06em] text-white"
             >
-              TEST COMPATIBILITY
+              {dict.ui.testCompatibility}
             </Link>
             <CardShare
               path={`/${encodeURIComponent(profile.login)}`}
               login={profile.login}
-              title={`${profile.name || profile.login} — rated ${profile.match} on GitTinder`}
-              text={`${profile.name || profile.login} rated ${profile.match} on GitTinder. Is it a match?`}
+              title={shareTitle}
+              text={shareText}
             />
             <a
               href={`https://github.com/${profile.login}`}
@@ -255,7 +262,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
               rel="noopener noreferrer"
               className="font-display rounded-[12px] border border-line px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-brand"
             >
-              GITHUB ↗
+              {dict.ui.github}
             </a>
           </div>
         </div>
@@ -265,7 +272,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
           embed snippet's long line (grid tracks default to min-content width) */}
       <div className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-[16px] md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {/* left — the six traits, drawn as a radar */}
-        <Section title="THE SIX TRAITS" accent={t.accent}>
+        <Section title={dict.ui.theSixTraits} accent={t.accent}>
           <div className="mx-auto max-w-[420px]">
             <TraitRadar traits={profile.stats} accent={t.accent} />
           </div>
@@ -277,9 +284,9 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
                   <Icon size={16} style={{ color: t.accent }} aria-hidden className="mt-[1px] shrink-0" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
-                      <Tip text={TRAIT_DESCRIPTIONS[key]}>
+                      <Tip text={dict.traits[key].desc}>
                         <span className="text-[13.5px] font-medium text-ink-soft">
-                          {TRAIT_LABELS[key]}
+                          {dict.traits[key].label}
                         </span>
                       </Tip>
                       <span className="font-display text-[15px] font-bold tabular-nums" style={{ color: t.accent }}>
@@ -304,7 +311,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
 
         {/* right column stack */}
         <div className="flex min-w-0 flex-col gap-[16px]">
-          <Section title="ABOUT" accent={t.accent}>
+          <Section title={dict.ui.about} accent={t.accent}>
             <div className="flex flex-col gap-[12px] pt-1">
               <p className="text-[14px] leading-[1.6] text-ink-soft">
                 {profile.lookingFor}
@@ -319,13 +326,13 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
                 ))}
               </div>
               <div className="flex items-center justify-between rounded-xl border border-line bg-surface/60 px-[14px] py-[10px]">
-                <span className="text-[13px] text-ink-dim">Member since</span>
+                <span className="text-[13px] text-ink-dim">{dict.ui.memberSince}</span>
                 <span className="font-display text-[14px] font-bold text-ink-soft">{profile.since}</span>
               </div>
             </div>
           </Section>
 
-          <Section title="SCORING METRICS" accent={t.accent} className="w-full">
+          <Section title={dict.ui.scoringMetrics} accent={t.accent} className="w-full">
             <div className="flex flex-col gap-[13px] pt-1">
               {profile.metrics.map((m, i) => (
                 <MetricBar key={m.label} label={m.label} value={m.value} score={m.score} unit={m.unit} accent={t.accent} index={i} />
@@ -333,7 +340,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
             </div>
           </Section>
 
-          <Section title="EMBED THE CARD" accent={t.accent} className="w-full">
+          <Section title={dict.ui.embedTheCard} accent={t.accent} className="w-full">
             <EmbedSnippet login={profile.login} name={profile.name} />
           </Section>
         </div>
@@ -342,30 +349,29 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
       {/* the sharing loop — score is known, now spread the verdict */}
       <section className="mt-14 rounded-2xl border border-line bg-surface/40 p-[clamp(20px,4vw,36px)] text-center">
         <h2 className="font-display text-[clamp(22px,3.4vw,30px)] tracking-[.02em]">
-          SPREAD THE <span className="gt-flame-text">VERDICT</span>.
+          {dict.ui.spreadTheVerdict} <span className="gt-flame-text">{dict.ui.spreadTheVerdictAccent}</span>
         </h2>
         <p className="mx-auto mt-2 max-w-[480px] text-[14px] leading-[1.5] text-ink-soft">
-          Your card already carries the score — now make sure everyone sees it.
-          Share it, challenge a friend, or find out who you&rsquo;d match with.
+          {dict.ui.spreadParagraph}
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <SocialShare
             path={`/${encodeURIComponent(profile.login)}`}
-            title={`${profile.name || profile.login} — rated ${profile.match} on GitTinder`}
-            text={`${profile.name || profile.login} rated ${profile.match} on GitTinder. Is it a match?`}
+            title={shareTitle}
+            text={shareText}
           />
           <Link
             href={`/vs/${encodeURIComponent(profile.login)}`}
             className="font-display inline-flex items-center gap-2 rounded-[12px] border border-line bg-surface/60 px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-brand"
           >
-            CHALLENGE A FRIEND ↗
+            {dict.ui.challengeAFriend} ↗
           </Link>
           <button
             type="button"
             onClick={() => document.getElementById("keep-swiping")?.scrollIntoView({ behavior: "smooth", block: "start" })}
             className="font-display inline-flex items-center gap-2 rounded-[12px] border border-line bg-surface/60 px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-brand"
           >
-            SEE WHO MATCHES YOU ↓
+            {dict.ui.seeWhoMatchesYou}
           </button>
         </div>
       </section>
@@ -374,7 +380,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
       <div id="keep-swiping" className="mt-16 scroll-mt-6">
         <div className="mb-[18px] flex items-center justify-between">
           <h2 className="font-display text-[clamp(22px,3.4vw,30px)] tracking-[.02em]">
-            KEEP SWIPING<span className="text-brand">.</span>
+            {dict.ui.keepSwiping}<span className="text-brand">.</span>
           </h2>
           <button
             type="button"
@@ -384,7 +390,7 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
             }}
             className="inline-flex cursor-pointer items-center gap-2 text-[12.5px] font-semibold text-ink-soft transition hover:text-brand"
           >
-            <RefreshCcw size={14} /> reshuffle
+            <RefreshCcw size={14} /> {dict.ui.reshuffle}
           </button>
         </div>
         <SwipeDeck
@@ -421,8 +427,8 @@ export default function ProfileView({ profile }: { profile: DatingProfile }) {
               <X size={14} strokeWidth={3} />
             </span>
             <span>
-              <span className="font-semibold text-[#fb5c66]">@{noSpark.login}</span> wasn&rsquo;t
-              into it — keep swiping
+              <span className="font-semibold text-[#fb5c66]">@{noSpark.login}</span>{" "}
+              {fmt(dict.ui.noSpark, { login: noSpark.login }).replace(/^@[^ ]+ /, "")}
             </span>
           </div>
         </div>

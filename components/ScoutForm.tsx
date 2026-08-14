@@ -7,6 +7,8 @@ import ThemeToggle from "@/components/ThemeToggle";
 import GitHubLink from "@/components/GitHubLink";
 import { SAMPLE_LOGINS } from "@/lib/github/samples";
 import { RANDOM_LOGINS } from "@/lib/swipe";
+import { useDict, useLocale } from "@/lib/i18n/client";
+import { fmtNum } from "@/lib/i18n/locale";
 import type { UserSearchHit } from "@/lib/github/search";
 
 interface Props {
@@ -38,6 +40,8 @@ const GITHUB_MARK = (
 );
 
 export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, onScout }: Props) {
+  const locale = useLocale();
+  const dict = useDict();
   const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
   // Latest search round, tagged with the query it was run for. Render derives
@@ -100,7 +104,7 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/mascot.png"
-          alt="GitTinder mascot"
+          alt={dict.ui.mascotAlt}
           width={44}
           height={44}
           draggable={false}
@@ -129,13 +133,13 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
       </div>
 
       <h1 className="font-display m-0 mb-3 text-[clamp(52px,7vw,100px)] leading-[.82] tracking-[.005em]">
-        One GitHub username. <br /> One dating <span className="gt-flame-text">profile.</span>
+        {dict.ui.heroLine1} <br /> {dict.ui.heroLine2} <span className="gt-flame-text">{dict.ui.heroLine2Accent}</span>
       </h1>
       <p className="mb-[10px] max-w-[440px] text-[clamp(15px,1.7vw,18px)] font-medium leading-[1.5] text-ink-dim max-[860px]:mx-auto">
-        Rated 0–99, complete with a bio, passions and a tier
+        {dict.ui.heroSub}
       </p>
       <p className="font-display mb-[26px] text-[clamp(17px,2vw,22px)] font-bold tracking-[.02em] text-brand">
-        is it a match?
+        {dict.ui.heroAccent}
       </p>
 
       <form
@@ -162,14 +166,14 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
             onKeyDown={(e) => {
               if (e.key === "Escape") setOpen(false);
             }}
-            placeholder="github username or name"
+            placeholder={dict.ui.searchPlaceholder}
             autoComplete="off"
             spellCheck={false}
             role="combobox"
             aria-expanded={showList}
             aria-controls="gt-search-listbox"
             aria-autocomplete="list"
-            aria-label="GitHub username or name"
+            aria-label={dict.ui.searchAria}
             className="font-mono h-14 w-full rounded-[14px] border-[1.5px] border-line bg-surface/70 pl-[34px] pr-5 text-[16px] font-medium text-ink outline-none backdrop-blur-[4px] transition focus:border-brand focus:bg-surface focus:shadow-[0_0_0_4px_rgba(255,70,85,.14),0_0_42px_rgba(255,70,85,.18)]"
           />
           {showList && (
@@ -180,7 +184,7 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
             >
               {results.searching && results.hits.length === 0 && (
                 <li className="px-[14px] py-[11px] text-[12.5px] text-ink-mute">
-                  scouting names…
+                  {dict.ui.searchingNames}
                 </li>
               )}
               {results.hits.map((s) => (
@@ -224,7 +228,7 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
           disabled={loading}
           className="font-display gt-flame group flex h-14 items-center gap-2 rounded-[14px] px-7 text-[20px] tracking-[.06em] text-white disabled:cursor-wait disabled:opacity-75"
         >
-          {loading ? "MATCHING…" : "MATCH ME"}
+          {loading ? dict.ui.matching : dict.ui.matchMe}
           {!loading && (
             <ArrowRight
               size={19}
@@ -245,7 +249,7 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
             className="inline-flex h-[40px] items-center gap-[8px] rounded-[12px] border border-line bg-surface/60 px-[14px] text-[12.5px] font-semibold tracking-[.01em] text-ink-soft transition hover:border-brand hover:text-brand"
           >
             {GITHUB_MARK}
-            Match your own GitHub
+            {dict.ui.matchOwnGitHub}
           </a>
         )}
         <button
@@ -255,7 +259,7 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
           className="inline-flex h-[40px] items-center gap-[8px] rounded-[12px] border border-line bg-surface/60 px-[14px] text-[12.5px] font-semibold tracking-[.01em] text-ink-soft transition hover:border-brand hover:text-brand disabled:cursor-wait disabled:opacity-75"
         >
           <Shuffle size={15} strokeWidth={2.4} />
-          Surprise me
+          {dict.ui.surpriseMe}
         </button>
       </div>
 
@@ -269,7 +273,7 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
       )}
 
       <div className="mt-[14px] text-[13px] text-ink-mute">
-        try{" "}
+        {dict.ui.try}{" "}
         {SAMPLE_LOGINS.slice(0, 2).map((login, i) => (
           <span key={login}>
             {i > 0 && " · "}
@@ -278,7 +282,7 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
             </button>
           </span>
         ))}{" "}
-        · or your own
+        {dict.ui.orYourOwn}
       </div>
 
       <div className="mt-[20px] flex flex-wrap items-center gap-x-[14px] gap-y-[10px] max-[860px]:justify-center">
@@ -289,9 +293,9 @@ export default function ScoutForm({ loading, error, scoutCount, oauthEnabled, on
               <span className="relative inline-flex h-[7px] w-[7px] rounded-full bg-brand" />
             </span>
             <span className="font-display relative text-[20px] leading-none tabular-nums text-ink">
-              {scoutCount.toLocaleString("en-US")}
+              {fmtNum(scoutCount, locale)}
             </span>
-            <span className="text-[12px] text-ink-mute">profiles matched</span>
+            <span className="text-[12px] text-ink-mute">{dict.ui.profilesMatched}</span>
           </span>
         )}
       </div>

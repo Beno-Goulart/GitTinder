@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { radarGeometry, radarSector } from "@/lib/radar";
-import { TRAIT_DESCRIPTIONS, TRAIT_LABELS, TRAITS } from "@/lib/dating/constants";
+import { TRAITS } from "@/lib/dating/constants";
 import type { Traits } from "@/lib/dating/types";
 import { rgba } from "@/lib/dating/theme";
+import { useDict } from "@/lib/i18n/client";
 
 const SIZE = 150; // viewBox unit — the svg scales to its container width
 
@@ -15,6 +16,7 @@ export default function TraitRadar({
   traits: Traits;
   accent: string;
 }) {
+  const dict = useDict();
   const geo = radarGeometry(traits, SIZE);
   const outer = geo.rings.length - 1;
   const [active, setActive] = useState<number | null>(null);
@@ -109,7 +111,7 @@ export default function TraitRadar({
             fill="transparent"
             role="button"
             tabIndex={0}
-            aria-label={`${TRAIT_LABELS[key]} ${traits[key]} — ${TRAIT_DESCRIPTIONS[key]}`}
+            aria-label={`${dict.traits[key].label} ${traits[key]} — ${dict.traits[key].desc}`}
             className="cursor-pointer focus:outline-none"
             onMouseEnter={() => setActive(i)}
             onMouseLeave={() => setActive((a) => (a === i ? null : a))}
@@ -138,7 +140,7 @@ export default function TraitRadar({
           }}
         >
           <div className="font-display text-[9.5px] font-bold tracking-[.22em] text-ink-faint">
-            {TRAIT_LABELS[activeKey]}
+            {dict.traits[activeKey].label}
           </div>
           <div
             className="font-display mt-[2px] text-[19px] leading-none tabular-nums"
@@ -147,7 +149,7 @@ export default function TraitRadar({
             {value}
           </div>
           <div className="mt-[2px] max-w-[160px] whitespace-normal break-words text-[9.5px] leading-snug text-ink-mute">
-            {TRAIT_DESCRIPTIONS[activeKey]}
+            {dict.traits[activeKey].desc}
           </div>
         </div>
       )}

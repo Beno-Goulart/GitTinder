@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { radarGeometry, radarSector } from "@/lib/radar";
-import { TRAIT_DESCRIPTIONS, TRAIT_LABELS, TRAITS } from "@/lib/dating/constants";
+import { TRAITS } from "@/lib/dating/constants";
 import { profileTheme, rgba } from "@/lib/dating/theme";
 import type { DatingProfile } from "@/lib/dating/types";
+import { useDict } from "@/lib/i18n/client";
 
 const SIZE = 150; // viewBox unit — the svg scales to its container width
 
@@ -20,6 +21,7 @@ export default function CompatRadar({
   b: DatingProfile;
   accent: string;
 }) {
+  const dict = useDict();
   const geoA = radarGeometry(a.stats, SIZE);
   const geoB = radarGeometry(b.stats, SIZE);
   const geo = geoA; // rings/labels/sectors are shared — axes don't depend on stats
@@ -122,7 +124,7 @@ export default function CompatRadar({
             fill="transparent"
             role="button"
             tabIndex={0}
-            aria-label={`${TRAIT_LABELS[trait]} — ${a.stats[trait]} vs ${b.stats[trait]}`}
+            aria-label={`${dict.traits[trait].label} — ${a.stats[trait]} vs ${b.stats[trait]}`}
             className="cursor-pointer focus:outline-none"
             onMouseEnter={() => setActive(i)}
             onMouseLeave={() => setActive((v) => (v === i ? null : v))}
@@ -151,7 +153,7 @@ export default function CompatRadar({
           }}
         >
           <div className="font-display text-[9.5px] font-bold tracking-[.22em] text-ink-faint">
-            {TRAIT_LABELS[key(active)]}
+            {dict.traits[key(active)].label}
           </div>
           <div className="mt-[3px] flex items-center justify-center gap-3">
             <span className="flex items-center gap-[5px] text-[10.5px] tabular-nums text-ink-dim">
@@ -164,7 +166,7 @@ export default function CompatRadar({
             </span>
           </div>
           <div className="mt-[2px] max-w-[150px] whitespace-normal break-words text-[9.5px] leading-snug text-ink-mute">
-            {TRAIT_DESCRIPTIONS[key(active)]}
+            {dict.traits[key(active)].desc}
           </div>
         </div>
       )}

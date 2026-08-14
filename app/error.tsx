@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Background from "@/components/Background";
+import { useDict } from "@/lib/i18n/client";
 
 // Route-level error boundary. Catches an unexpected throw in the route subtree —
 // a bad render, or an upstream failure that isn't a clean GithubError the page
@@ -11,6 +12,7 @@ import Background from "@/components/Background";
 // error overlay. `reset` re-renders the segment; the home link is the way out.
 // Mirrors the NotScouted look on the /<user> page so a crash still feels on-brand.
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  const dict = useDict();
   useEffect(() => {
     // Surfaces in the server / Vercel logs; the digest ties a user-reported
     // failure to its log line.
@@ -23,28 +25,28 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
       <main className="relative z-[2] mx-auto flex min-h-screen max-w-[560px] flex-col items-center justify-center px-6 text-center">
         <Image
           src="/mascot.png"
-          alt="GitTinder mascot"
+          alt={dict.ui.mascotAlt}
           width={1254}
           height={1254}
           priority
           className="h-16 w-auto"
         />
-        <h1 className="font-display mt-3 text-[clamp(30px,6vw,48px)] font-black leading-[.95]">The date went quiet</h1>
+        <h1 className="font-display mt-3 text-[clamp(30px,6vw,48px)] font-black leading-[.95]">{dict.ui.dateWentQuiet}</h1>
         <p className="mt-3 text-[15.5px] leading-[1.5] text-ink-soft">
-          Something broke mid-match. Try again — if it keeps happening, the algorithm may be down for a moment.
+          {dict.ui.dateWentQuietParagraph}
         </p>
         <div className="mt-7 flex items-center gap-3">
           <button
             onClick={reset}
             className="font-display gt-flame inline-flex h-[46px] items-center rounded-xl px-6 text-[16px] tracking-[.06em] text-white"
           >
-            TRY AGAIN
+            {dict.ui.tryAgain}
           </button>
           <Link
             href="/"
             className="font-display inline-flex h-[46px] items-center rounded-xl border border-line px-6 text-[16px] tracking-[.06em] text-ink-soft transition hover:border-ink-soft hover:text-ink"
           >
-            HOME
+            {dict.ui.home}
           </Link>
         </div>
         {error.digest && <p className="mt-6 font-mono text-[11px] tracking-wide text-ink-mute">ref: {error.digest}</p>}

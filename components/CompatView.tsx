@@ -13,9 +13,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Chemistry } from "@/lib/dating/compat";
-import { TRAIT_DESCRIPTIONS, TRAIT_LABELS } from "@/lib/dating/constants";
 import { languageLogoUrl, logoSlugFor } from "@/lib/github/languages";
 import type { DatingProfile, TraitKey } from "@/lib/dating/types";
+import { useDict } from "@/lib/i18n/client";
+import { fmt } from "@/lib/i18n/dicts";
 import DatingCard from "./DatingCard";
 import ShareButton from "./ShareButton";
 import SocialShare from "./SocialShare";
@@ -114,6 +115,7 @@ export default function CompatView({
   chemistry: Chemistry;
 }) {
   const t = chemistry;
+  const dict = useDict();
   const LeftIcon = TRAIT_ICONS[t.leftLead];
   const RightIcon = TRAIT_ICONS[t.rightLead];
 
@@ -137,20 +139,23 @@ export default function CompatView({
         </div>
         <div className="mt-[2px] flex items-center gap-[6px] text-[12px] text-ink-soft">
           <Icon size={13} style={{ color: t.accent }} aria-hidden />
-          leads on {TRAIT_LABELS[lead]}
+          {fmt(dict.ui.leadsOn, { trait: dict.traits[lead].label })}
         </div>
         <p className="mt-[4px] text-[12px] leading-snug text-ink-mute">
-          {TRAIT_DESCRIPTIONS[lead]}
+          {dict.traits[lead].desc}
         </p>
       </div>
     </div>
   );
 
+  const shareTitle = fmt(dict.ui.shareTitle, { a: a.login, b: b.login, score: t.score });
+  const shareText = fmt(dict.ui.shareText, { a: a.login, b: b.login, score: t.score });
+
   return (
     <div className="relative z-[2] mx-auto w-full max-w-[1180px] px-[clamp(16px,4vw,40px)] pb-16">
       {/* top bar */}
       <div className="flex items-center justify-between py-4">
-        <Link href="/" aria-label="GitTinder home" className="transition hover:opacity-80">
+        <Link href="/" aria-label={dict.ui.homeAria} className="transition hover:opacity-80">
           <Image
             src="/logo.png"
             alt="GitTinder"
@@ -164,15 +169,15 @@ export default function CompatView({
           <ThemeToggle />
           <ShareButton
             path={`/vs/${encodeURIComponent(a.login)}/${encodeURIComponent(b.login)}`}
-            label="SHARE"
-            title={`@${a.login} × @${b.login} — ${t.score}% chemistry on GitTinder`}
-            text={`Are @${a.login} and @${b.login} a match? ${t.score}% chemistry on GitTinder.`}
+            label={dict.ui.share}
+            title={shareTitle}
+            text={shareText}
           />
           <Link
             href="/vs"
             className="font-display rounded-[10px] border border-line bg-surface/60 px-4 py-2 text-[12px] tracking-[.14em] text-ink-soft transition hover:border-brand/60 hover:text-brand"
           >
-            NEW PAIR ↗
+            {dict.ui.newPair}
           </Link>
         </div>
       </div>
@@ -201,7 +206,7 @@ export default function CompatView({
               {t.score}
             </span>
             <span className="font-display text-[clamp(9px,1.2vw,11px)] font-bold tracking-[.24em] opacity-90">
-              CHEMISTRY
+              {dict.ui.chemistry}
             </span>
           </div>
 
@@ -215,7 +220,7 @@ export default function CompatView({
         </div>
 
         <div className="font-display mt-8 text-[12px] font-bold tracking-[.3em] text-brand">
-          CHEMISTRY REPORT
+          {dict.ui.chemistryReport}
         </div>
         <h1 className="font-display gt-flame-text mt-2 text-center text-[clamp(40px,7.4vw,84px)] font-black leading-[.88] tracking-[.01em]">
           {t.tierLabel}.
@@ -224,28 +229,27 @@ export default function CompatView({
           {t.verdict}
         </p>
         <p className="font-mono mt-2 text-[13px] tracking-[.08em] text-ink-faint">
-          @{a.login} × @{b.login} · {t.score}% chemistry
+          {fmt(dict.ui.pairMeta, { a: a.login, b: b.login, score: t.score })}
         </p>
       </header>
 
       {/* the breakdown */}
       <div className="mt-[clamp(28px,5vw,48px)] grid grid-cols-[minmax(0,1fr)] gap-[16px] md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <Section title="THE OVERLAY" accent={t.accent} className="md:col-span-2">
+        <Section title={dict.ui.theOverlay} accent={t.accent} className="md:col-span-2">
           <p className="mb-4 text-[13px] leading-[1.5] text-ink-soft">
-            Both shapes on one radar — where they overlap and where they
-            diverge. Hover an axis to compare trait by trait.
+            {dict.ui.overlayParagraph}
           </p>
           <div className="mx-auto max-w-[420px]">
             <CompatRadar a={a} b={b} accent={t.accent} />
           </div>
         </Section>
 
-        <Section title="THE CHEMISTRY" accent={t.accent}>
+        <Section title={dict.ui.theChemistry} accent={t.accent}>
           <div className="flex flex-col gap-[14px] pt-1">
-            <Meter label="Shared languages" value={t.sharedScore} accent={t.accent} index={0} />
-            <Meter label="Same core" value={t.similarity} accent={t.accent} index={1} />
-            <Meter label="Complementary edges" value={t.complementarity} accent={t.accent} index={2} />
-            <Meter label="On-paper charm" value={t.charm} accent={t.accent} index={3} />
+            <Meter label={dict.ui.sharedLanguagesMeter} value={t.sharedScore} accent={t.accent} index={0} />
+            <Meter label={dict.ui.sameCore} value={t.similarity} accent={t.accent} index={1} />
+            <Meter label={dict.ui.complementaryEdges} value={t.complementarity} accent={t.accent} index={2} />
+            <Meter label={dict.ui.onPaperCharm} value={t.charm} accent={t.accent} index={3} />
           </div>
           <ul className="mt-[16px] flex flex-col gap-[10px] border-t border-line pt-[14px]">
             {t.notes.map((note) => (
@@ -258,13 +262,13 @@ export default function CompatView({
         </Section>
 
         <div className="flex flex-col gap-[16px]">
-          <Section title="IN COMMON" accent={t.accent}>
+          <Section title={dict.ui.inCommon} accent={t.accent}>
             {t.sharedLanguages.length > 0 ? (
               <>
                 <p className="mb-[10px] text-[13px] text-ink-soft">
                   {t.sharedLanguages.length === 1
-                    ? "One language you both speak:"
-                    : "Languages you both speak:"}
+                    ? dict.ui.oneSharedLanguage
+                    : dict.ui.sharedLanguagesIntro}
                 </p>
                 <div className="flex flex-wrap gap-[8px]">
                   {t.sharedLanguages.map((lang) => {
@@ -291,19 +295,18 @@ export default function CompatView({
               </>
             ) : (
               <p className="text-[13px] leading-[1.5] text-ink-soft">
-                Zero languages in common — every conversation starts from a
-                different directory. Sometimes that&rsquo;s the point.
+                {dict.ui.noSharedLanguages}
               </p>
             )}
           </Section>
 
-          <Section title="HOW YOU FIT" accent={t.accent}>
+          <Section title={dict.ui.howYouFit} accent={t.accent}>
             <div className="flex flex-col gap-[14px] pt-1">
               {leadRow(a, t.leftLead, LeftIcon)}
               <div className="mx-4 flex items-center gap-3">
                 <span className="h-[1px] flex-1 bg-line" />
                 <span className="font-display text-[11px] font-bold tracking-[.22em] text-ink-faint">
-                  {t.leftLead === t.rightLead ? "SAME LANE" : "COUNTERWEIGHT"}
+                  {t.leftLead === t.rightLead ? dict.ui.sameLane : dict.ui.counterweight}
                 </span>
                 <span className="h-[1px] flex-1 bg-line" />
               </div>
@@ -316,24 +319,23 @@ export default function CompatView({
       {/* challenge a friend — the sharing loop */}
       <section className="mt-14 rounded-2xl border border-line bg-surface/40 p-[clamp(20px,4vw,36px)] text-center">
         <h2 className="font-display text-[clamp(22px,3.4vw,30px)] tracking-[.02em]">
-          CHALLENGE A <span className="gt-flame-text">FRIEND</span>.
+          {dict.ui.challengeHeading} <span className="gt-flame-text">{dict.ui.challengeHeadingAccent}</span>
         </h2>
         <p className="mx-auto mt-2 max-w-[480px] text-[14px] leading-[1.5] text-ink-soft">
-          Send them this matchup and let them argue with the numbers. It&rsquo;s
-          better when they see it themselves.
+          {dict.ui.challengeParagraph}
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <ShareButton
             path={`/vs/${encodeURIComponent(a.login)}/${encodeURIComponent(b.login)}`}
-            label="CHALLENGE A FRIEND"
+            label={dict.ui.challengeAFriend}
             variant="flame"
-            title={`@${a.login} × @${b.login} — ${t.score}% chemistry on GitTinder`}
-            text={`Are @${a.login} and @${b.login} a match? ${t.score}% chemistry on GitTinder.`}
+            title={shareTitle}
+            text={shareText}
           />
           <SocialShare
             path={`/vs/${encodeURIComponent(a.login)}/${encodeURIComponent(b.login)}`}
-            title={`@${a.login} × @${b.login} — ${t.score}% chemistry on GitTinder`}
-            text={`Are @${a.login} and @${b.login} a match? ${t.score}% chemistry on GitTinder.`}
+            title={shareTitle}
+            text={shareText}
           />
         </div>
       </section>
@@ -341,13 +343,13 @@ export default function CompatView({
       {/* actions */}
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
         <Link href="/vs" className="font-display gt-flame inline-flex items-center gap-2 rounded-[12px] px-6 py-3 text-[15px] tracking-[.06em] text-white">
-          <RefreshCcw size={15} /> NEW PAIR
+          <RefreshCcw size={15} /> {dict.ui.newPair}
         </Link>
         <Link
           href="/"
           className="font-display rounded-[12px] border border-line px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:border-ink/30 hover:text-ink"
         >
-          HOME
+          {dict.ui.home}
         </Link>
       </div>
     </div>

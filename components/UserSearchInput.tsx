@@ -2,6 +2,7 @@
 
 import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from "react";
 import type { UserSearchHit } from "@/lib/github/search";
+import { useDict } from "@/lib/i18n/client";
 
 // Same grammar as lib/github/client.ts: alphanumerics + hyphens, 1–39 chars, at
 // least one alphanumeric. A username-shaped query skips the debounced search
@@ -34,6 +35,7 @@ const UserSearchInput = forwardRef<UserSearchInputHandle, {
   label: string;
   placeholder: string;
 }>(function UserSearchInput({ value, onValueChange, label, placeholder }, ref) {
+  const dict = useDict();
   const [open, setOpen] = useState(false);
   // Latest search round, tagged with the query it was run for. Render derives
   // "show suggestions" from results.q === current query, so a keystroke that
@@ -122,7 +124,7 @@ const UserSearchInput = forwardRef<UserSearchInputHandle, {
         >
           {results.searching && results.hits.length === 0 && (
             <li className="px-[14px] py-[11px] text-[12.5px] text-ink-mute">
-              scouting names…
+              {dict.ui.searchingNames}
             </li>
           )}
           {results.hits.map((s) => (

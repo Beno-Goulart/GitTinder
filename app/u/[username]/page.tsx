@@ -7,6 +7,9 @@ import { type GithubError } from "@/lib/github/client";
 import { checkScoutRateLimit, RATE_LIMIT_ERROR } from "@/lib/rateLimit";
 import { loadProfile } from "@/lib/scout";
 import { recordScout } from "@/lib/analytics";
+import { dicts, fmt } from "@/lib/i18n/dicts";
+import { getLocale } from "@/lib/i18n/server";
+import type { Locale } from "@/lib/i18n/locale";
 import type { DatingProfile } from "@/lib/dating/types";
 import ProfileRoute from "./ProfileRoute";
 
@@ -14,36 +17,44 @@ export const dynamic = "force-dynamic"; // per-user, token-gated, always fresh
 
 export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
   const { username } = await params;
+  const meta = dicts[await getLocale()].meta;
   // Budget check runs before the scout; memoised per request, so the Page below
   // shares this single check (and increment) instead of double-counting.
   if (!(await checkScoutRateLimit()).allowed) {
-    return { title: `@${username} · GitTinder`, robots: { index: false } };
+    return { title: fmt(meta.profileShortTitle, { login: username }), robots: { index: false } };
   }
-  const res = await loadProfile(username);
+  const res = await loadProfile(username, await getLocale());
   if ("profile" in res) {
+    const p = res.profile;
     return {
-      title: `${res.profile.name || res.profile.login}, ${res.profile.age} — ${res.profile.match}% match · GitTinder`,
-      description: `${res.profile.name || res.profile.login} on GitTinder: ${res.profile.match}% match, ${res.profile.tierLabel}, ${res.profile.vibe}.`,
-      alternates: { canonical: `/${res.profile.login}` },
+      title: fmt(meta.profileTitle, { name: p.name || p.login, age: p.age, match: p.match }),
+      description: fmt(meta.profileDescription, {
+        name: p.name || p.login,
+        match: p.match,
+        tier: p.tierLabel,
+        vibe: p.vibe,
+      }),
+      alternates: { canonical: `/${p.login}` },
       twitter: { card: "summary_large_image" },
       // og:image comes from the file-convention opengraph-image.tsx — the portrait
       // card, identical to the /<login>.png embed (SHARE THE CARD).
     };
   }
   // Not a real profile — keep these soft-404s out of the index.
-  return { title: `@${username} · GitTinder`, robots: { index: false } };
+  return { title: fmt(meta.profileShortTitle, { login: username }), robots: { index: false } };
 }
 
-function NotScouted({ username, error }: { username: string; error: GithubError }) {
+function NotScouted({ username, error, locale }: { username: string; error: GithubError; locale: Locale }) {
   const rateLimited = error.type === "ratelimit";
   const noSuchUser = error.type === "notfound" || error.type === "invalid";
-  const heading = rateLimited ? "Too many right swipes" : noSuchUser ? "No profile found" : "Matching interrupted";
+  const ui = dicts[locale].ui;
+  const heading = rateLimited ? ui.tooManySwipes : noSuchUser ? ui.noProfileFound : ui.matchingInterrupted;
   const message = rateLimited
-    ? `The algorithm's on a coffee date — GitHub just rate-limited us. Give it a couple minutes, then try @${username} again.`
+    ? fmt(ui.rateLimitMessage, { username })
     : error.type === "notfound"
-      ? `There's no GitHub user named @${username}.`
+      ? fmt(ui.noUserMessage, { username })
       : error.type === "invalid"
-        ? `“${username}” isn't a valid GitHub username.`
+        ? fmt(ui.invalidUserMessage, { username })
         : error.message;
   return (
     <main className="relative z-[2] mx-auto flex min-h-screen max-w-[560px] flex-col items-center justify-center px-6 text-center">
@@ -61,7 +72,7 @@ function NotScouted({ username, error }: { username: string; error: GithubError 
         href="/"
         className="font-display gt-flame mt-7 inline-flex h-[46px] items-center rounded-xl px-6 text-[16px] tracking-[.06em] text-white"
       >
-        MATCH SOMEONE ELSE
+        {ui.matchSomeoneElse}
       </Link>
     </main>
   );
@@ -69,15 +80,16 @@ function NotScouted({ username, error }: { username: string; error: GithubError 
 
 export default async function Page({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
+  const locale = await getLocale();
   if (!(await checkScoutRateLimit()).allowed) {
     return (
       <div className="relative min-h-screen overflow-x-hidden text-ink">
         <Background />
-        <NotScouted username={username} error={RATE_LIMIT_ERROR} />
+        <NotScouted username={username} error={RATE_LIMIT_ERROR} locale={locale} />
       </div>
     );
   }
-  const res = await loadProfile(username);
+  const res = await loadProfile(username, locale);
   if ("profile" in res) {
     const profile = res.profile as DatingProfile;
     after(() => recordScout()); // analytics, flushed after the response (serverless-safe)
@@ -91,7 +103,7 @@ export default async function Page({ params }: { params: Promise<{ username: str
   return (
     <div className="relative min-h-screen overflow-x-hidden text-ink">
       <Background />
-      <NotScouted username={username} error={(res as { error: GithubError }).error} />
+      <NotScouted username={username} error={(res as { error: GithubError }).error} locale={locale} />
     </div>
   );
 }

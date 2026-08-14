@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Background from "@/components/Background";
+import { dicts } from "@/lib/i18n/dicts";
+import { getLocale } from "@/lib/i18n/server";
 
-export const metadata: Metadata = {
-  title: "404 · No match — GitTinder",
-  robots: { index: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: dicts[await getLocale()].meta.notFoundTitle, robots: { index: false } };
+}
 
-export default function NotFound() {
+export default async function NotFound() {
+  const ui = dicts[await getLocale()].ui;
   return (
     <div className="relative min-h-screen overflow-x-hidden text-ink">
       <Background />
@@ -17,7 +19,7 @@ export default function NotFound() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/mascot.png"
-            alt="GitTinder mascot"
+            alt={ui.mascotAlt}
             width={110}
             height={110}
             draggable={false}
@@ -26,10 +28,10 @@ export default function NotFound() {
           />
         </div>
 
-        <p className="font-display text-[12px] font-bold tracking-[.3em] text-brand">SWIPED LEFT</p>
+        <p className="font-display text-[12px] font-bold tracking-[.3em] text-brand">{ui.swipedLeft}</p>
 
         <h1 className="font-display mt-2 text-[clamp(72px,16vw,140px)] font-black leading-[.84]">
-          NO MATCH
+          {ui.noMatch}
         </h1>
 
         <p className="font-mono mt-2 text-[13px] font-medium tracking-[.55em] text-ink-faint">
@@ -37,7 +39,7 @@ export default function NotFound() {
         </p>
 
         <p className="mt-5 max-w-[430px] text-[15.5px] leading-[1.55] text-ink-soft">
-          This profile swiped left on the URL — there&rsquo;s no route here.
+          {ui.notFoundParagraph}
         </p>
 
         <div className="mt-8 flex flex-col items-center gap-[14px]">
@@ -45,13 +47,13 @@ export default function NotFound() {
             href="/"
             className="font-display gt-flame inline-flex h-[46px] items-center rounded-xl px-7 text-[16px] tracking-[.06em] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
           >
-            FIND A MATCH
+            {ui.findAMatch}
           </Link>
           <Link
             href="/"
             className="rounded text-[13.5px] font-medium text-ink-faint underline-offset-4 transition hover:text-brand hover:underline focus-visible:text-brand focus-visible:underline focus-visible:outline-none"
           >
-            Match a developer &rarr;
+            {ui.matchADeveloper}
           </Link>
         </div>
       </main>

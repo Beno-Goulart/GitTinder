@@ -1,61 +1,25 @@
-import { TRAITS, TRAIT_LABELS } from "./constants";
+import { TRAITS } from "./constants";
+import { dicts, fmt } from "@/lib/i18n/dicts";
+import type { Locale } from "@/lib/i18n/locale";
 import type { CompatTier, DatingProfile, TraitKey } from "./types";
 
 // Pair chemistry — "are these two profiles a match?" The six-traits radar, the
 // shared languages and each profile's standalone match score combine into one
 // 0–99 chemistry score with its own tier ("match made in merge" → "swipe left").
 // Pure and framework-agnostic so the same numbers drive the /vs page, its OG
-// image and the unit tests.
+// image and the unit tests. Labels/verdicts/notes read from the locale dict.
 
 export const COMPAT_TIERS: {
   min: number;
   tier: CompatTier;
-  label: string;
   accent: string;
-  verdict: string;
 }[] = [
-  {
-    min: 90,
-    tier: "merge",
-    label: "MATCH MADE IN MERGE",
-    accent: "#d4932e",
-    verdict: "Merge the branches and rewrite the README — this one ships.",
-  },
-  {
-    min: 78,
-    tier: "sparks",
-    label: "SPARKS FLYING",
-    accent: "#ff4655",
-    verdict: "Definite chemistry. Expect a pull request before the check clears.",
-  },
-  {
-    min: 64,
-    tier: "vibes",
-    label: "GOOD VIBES",
-    accent: "#25a86f",
-    verdict: "Good energy and good signal — worth a coffee date and a pair commit.",
-  },
-  {
-    min: 48,
-    tier: "coffee",
-    label: "COFFEE DATE",
-    accent: "#e8922a",
-    verdict: "A maybe. Low-stakes merge to test the waters.",
-  },
-  {
-    min: 34,
-    tier: "complicated",
-    label: "IT'S COMPLICATED",
-    accent: "#e24f93",
-    verdict: "Conflicting dependencies — resolving this could take a while.",
-  },
-  {
-    min: 0,
-    tier: "nope",
-    label: "SWIPE LEFT",
-    accent: "#e5484d",
-    verdict: "Rebase or reset — the branches just don't agree.",
-  },
+  { min: 90, tier: "merge", accent: "#d4932e" },
+  { min: 78, tier: "sparks", accent: "#ff4655" },
+  { min: 64, tier: "vibes", accent: "#25a86f" },
+  { min: 48, tier: "coffee", accent: "#e8922a" },
+  { min: 34, tier: "complicated", accent: "#e24f93" },
+  { min: 0, tier: "nope", accent: "#e5484d" },
 ];
 
 const clamp = (x: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, x));
@@ -89,7 +53,12 @@ export interface Chemistry {
   notes: string[]; // plain-language breakdown lines
 }
 
-export function computeChemistry(a: DatingProfile, b: DatingProfile): Chemistry {
+export function computeChemistry(
+  a: DatingProfile,
+  b: DatingProfile,
+  locale: Locale = "en",
+): Chemistry {
+  const dict = dicts[locale];
   const sharedLanguages = a.interests.filter((x) => b.interests.includes(x));
   const sharedScore = Math.round(100 * jaccard(a.interests, b.interests));
 
@@ -125,27 +94,37 @@ export function computeChemistry(a: DatingProfile, b: DatingProfile): Chemistry 
 
   const tier =
     COMPAT_TIERS.find((t) => score >= t.min) ?? COMPAT_TIERS[COMPAT_TIERS.length - 1];
+  const tierDict = dict.compat.tiers[tier.tier];
 
   const leftLead = topTrait(a);
   const rightLead = topTrait(b);
 
+  const notes = dict.compat.notes;
   const langLine = sharedLanguages.length
-    ? `Both speak ${sharedLanguages.join(" & ")}${sharedLanguages.length > 1 ? " — a shared mother tongue." : "."}`
-    : "No languages in common — opposites attract (or don't).";
+    ? fmt(sharedLanguages.length > 1 ? notes.sharedMany : notes.sharedOne, {
+        langs: sharedLanguages.join(" & "),
+      })
+    : notes.none;
 
+  const traitLabel = (k: TraitKey) => dict.traits[k].label;
   const compLine =
     leftLead === rightLead
-      ? `@${a.login} and @${b.login} both lead on ${TRAIT_LABELS[leftLead]} — same lane, could be a race or a relay.`
-      : `@${a.login} leads on ${TRAIT_LABELS[leftLead]}, @${b.login} on ${TRAIT_LABELS[rightLead]} — different corners of the radar.`;
+      ? fmt(notes.sameLane, { a: `@${a.login}`, b: `@${b.login}`, trait: traitLabel(leftLead) })
+      : fmt(notes.differentCorners, {
+          a: `@${a.login}`,
+          b: `@${b.login}`,
+          traitA: traitLabel(leftLead),
+          traitB: traitLabel(rightLead),
+        });
 
-  const charmLine = `On paper: ${charm}% average match (${a.match}% × ${b.match}%).`;
+  const charmLine = fmt(notes.charm, { score: charm, a: a.match, b: b.match });
 
   return {
     score,
     tier: tier.tier,
-    tierLabel: tier.label,
+    tierLabel: tierDict.label,
     accent: tier.accent,
-    verdict: tier.verdict,
+    verdict: tierDict.verdict,
     sharedLanguages,
     sharedScore,
     similarity,

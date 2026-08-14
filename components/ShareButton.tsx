@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { Check, Share2 } from "lucide-react";
+import { useDict } from "@/lib/i18n/client";
 
 // A share button that prefers the native Web Share sheet and falls back to
 // copying the absolute URL to the clipboard (with a brief "COPIED" state).
@@ -18,12 +19,13 @@ interface Props {
 
 export default function ShareButton({
   path,
-  label = "SHARE",
+  label,
   title,
   text,
   variant = "ghost",
   className,
 }: Props) {
+  const dict = useDict();
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -64,7 +66,7 @@ export default function ShareButton({
   return (
     <button type="button" onClick={handle} className={`${base} ${style} ${className ?? ""}`}>
       <Icon size={variant === "flame" ? 15 : 14} aria-hidden />
-      {copied ? "COPIED" : label}
+      {copied ? dict.ui.copied : (label ?? dict.ui.share)}
     </button>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
+import { useDict } from "@/lib/i18n/client";
 
 // Light / dark toggle — flips `.dark` on <html>, which re-tints the whole
 // design system (all color tokens are CSS variables overridden under `.dark`).
@@ -20,6 +21,7 @@ const getSnapshot = () => document.documentElement.classList.contains("dark");
 const getServerSnapshot = () => false;
 
 export default function ThemeToggle() {
+  const dict = useDict();
   const dark = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   const toggle = () => {
@@ -37,7 +39,7 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={dark ? dict.ui.toLight : dict.ui.toDark}
       className="inline-flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border border-line bg-surface/60 text-ink-soft transition hover:border-brand hover:text-brand"
     >
       {dark ? <Sun size={15} strokeWidth={2} /> : <Moon size={15} strokeWidth={2} />}

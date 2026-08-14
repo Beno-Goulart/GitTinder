@@ -7,9 +7,8 @@ import SampleDeck from "@/components/SampleDeck";
 import LoadingScreen from "@/components/LoadingScreen";
 import FooterCredit from "@/components/FooterCredit";
 import TopProfiles from "@/components/TopProfiles";
-import { SAMPLE_PROFILES } from "@/lib/github/samples";
-
-const AUTH_ERROR = "GitHub sign-in didn't finish — try again.";
+import { useDict, useLocale } from "@/lib/i18n/client";
+import { sampleProfiles } from "@/lib/github/samples";
 
 export default function AppShell({
   scoutCount,
@@ -23,6 +22,8 @@ export default function AppShell({
   authReason?: string;
 }) {
   const router = useRouter();
+  const locale = useLocale();
+  const dict = useDict();
   const [isPending, startTransition] = useTransition();
   const [pending, setPending] = useState<string | null>(null);
 
@@ -42,12 +43,12 @@ export default function AppShell({
       <div className="mx-auto flex w-full max-w-[1180px] flex-1 items-center gap-[clamp(24px,5vw,72px)] px-[clamp(22px,5vw,56px)] max-[1120px]:flex-col max-[1120px]:gap-[34px] max-[1120px]:pb-6 max-[1120px]:pt-[clamp(40px,6vh,56px)] max-[1120px]:text-center">
         <ScoutForm
           loading={isPending}
-          error={authError ? `${AUTH_ERROR} (reason: ${authReason ?? "unknown"})` : null}
+          error={authError ? `${dict.ui.authError} (${dict.ui.unknown}: ${authReason ?? dict.ui.unknown})` : null}
           scoutCount={scoutCount}
           oauthEnabled={oauthEnabled}
           onScout={handleScout}
         />
-        <SampleDeck cards={SAMPLE_PROFILES} onPick={handleScout} />
+        <SampleDeck cards={sampleProfiles(locale)} onPick={handleScout} />
       </div>
       <TopProfiles />
       <footer className="relative z-[2] mt-auto flex flex-none items-center justify-center p-[clamp(12px,2.6vh,24px)]">

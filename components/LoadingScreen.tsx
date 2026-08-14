@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useDict, useLocale } from "@/lib/i18n/client";
 import { punAt } from "@/lib/puns";
 
 // Full-screen loading state shown while the profile is scouted. The mascot
 // pulses; a dating-git pun rotates every ~1.8s.
 export default function LoadingScreen({ login }: { login?: string }) {
   const [tick, setTick] = useState(0);
+  const locale = useLocale();
+  const dict = useDict();
 
   useEffect(() => {
     const id = setInterval(() => setTick((t) => t + 1), 1800);
@@ -19,7 +22,7 @@ export default function LoadingScreen({ login }: { login?: string }) {
         <div className="absolute inset-0 -m-8 rounded-full bg-brand/20 blur-2xl" />
         <img
           src="/mascot.png"
-          alt="GitTinder mascot"
+          alt={dict.ui.mascotAlt}
           width={120}
           height={120}
           draggable={false}
@@ -28,7 +31,7 @@ export default function LoadingScreen({ login }: { login?: string }) {
       </div>
 
       <div className="font-display mt-8 text-[clamp(30px,5vw,52px)] leading-none tracking-[.02em] text-ink">
-        MATCHING{" "}
+        {dict.ui.matchingTitle}{" "}
         {login && <span className="font-mono align-middle text-[0.5em] text-brand">@{login}</span>}
       </div>
 
@@ -38,7 +41,7 @@ export default function LoadingScreen({ login }: { login?: string }) {
         className="animate-pun-in mt-3 h-6 text-[15px] font-medium text-ink-soft"
         aria-live="polite"
       >
-        {punAt(tick)}
+        {punAt(tick, locale)}
       </p>
 
       {/* indeterminate progress sliver */}

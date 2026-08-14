@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, Download, Link2, Share2 } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
+import { useDict } from "@/lib/i18n/client";
 
 // The "SHARE THE CARD" control — a split button. The main half shares the card
 // like before (native Web Share sheet when available, otherwise copy the URL);
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function CardShare({ path, title, text, login, className }: Props) {
+  const dict = useDict();
   const [open, setOpen] = useState(false);
   const [notice, setNotice] = useState<null | "copied" | "saved">(null);
   const root = useRef<HTMLDivElement>(null);
@@ -110,12 +112,12 @@ export default function CardShare({ path, title, text, login, className }: Props
           className="font-display inline-flex items-center gap-2 px-5 py-3 text-[13px] tracking-[.1em] text-ink-soft transition hover:text-brand"
         >
           {notice === "copied" ? <Check size={14} className="text-brand" aria-hidden /> : <Share2 size={14} aria-hidden />}
-          {notice === "copied" ? "COPIED" : "SHARE THE CARD"}
+          {notice === "copied" ? dict.ui.copied : dict.ui.shareTheCard}
         </button>
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          aria-label="More share options"
+          aria-label={dict.ui.moreShareOptions}
           aria-expanded={open}
           className="border-l border-line px-[9px] text-ink-faint transition hover:text-brand"
         >
@@ -135,7 +137,7 @@ export default function CardShare({ path, title, text, login, className }: Props
             className="flex w-full cursor-pointer items-center gap-[10px] rounded-[8px] px-3 py-[9px] text-left text-[13px] font-medium text-ink-dim transition hover:bg-surface-2 hover:text-ink"
           >
             {notice === "copied" ? <Check size={15} className="text-brand" aria-hidden /> : <Link2 size={15} className="text-ink-faint" aria-hidden />}
-            {notice === "copied" ? "Link copied" : "Copy link"}
+            {notice === "copied" ? dict.ui.linkCopied : dict.ui.copyLink}
           </button>
           <button
             type="button"
@@ -144,7 +146,7 @@ export default function CardShare({ path, title, text, login, className }: Props
             className="flex w-full cursor-pointer items-center gap-[10px] rounded-[8px] px-3 py-[9px] text-left text-[13px] font-medium text-ink-dim transition hover:bg-surface-2 hover:text-ink"
           >
             {notice === "saved" ? <Check size={15} className="text-brand" aria-hidden /> : <Download size={15} className="text-ink-faint" aria-hidden />}
-            {notice === "saved" ? "Image saved" : "Download image"}
+            {notice === "saved" ? dict.ui.imageSaved : dict.ui.downloadImage}
           </button>
         </div>
       )}

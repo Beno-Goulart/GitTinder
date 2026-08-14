@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import type { CardProfile, DatingProfile } from "@/lib/dating/types";
 import { sparkScore } from "@/lib/dating/compat";
+import { useDict, useLocale } from "@/lib/i18n/client";
+import { fmt } from "@/lib/i18n/dicts";
 import DatingCard from "./DatingCard";
 import { punAt } from "@/lib/puns";
 
@@ -21,6 +23,8 @@ export default function MatchOverlay({
   onClose: () => void;
 }) {
   const [tick, setTick] = useState(0);
+  const locale = useLocale();
+  const dict = useDict();
   const spark = sparkScore(profile, mate);
 
   useEffect(() => {
@@ -37,7 +41,7 @@ export default function MatchOverlay({
       className="fixed inset-0 z-[80] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
-      aria-label="It's a match"
+      aria-label={dict.ui.matchAria}
       onClick={onClose}
     >
       <div
@@ -47,7 +51,7 @@ export default function MatchOverlay({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={dict.ui.close}
           className="absolute -right-2 -top-10 rounded-full p-2 text-white/70 transition hover:text-white"
         >
           <X size={26} />
@@ -82,7 +86,7 @@ export default function MatchOverlay({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/mascot.png"
-              alt="GitTinder mascot"
+              alt={dict.ui.mascotAlt}
               width={76}
               height={76}
               draggable={false}
@@ -92,18 +96,17 @@ export default function MatchOverlay({
         </div>
 
         <h2 className="gt-flame-text font-display mt-2 text-[clamp(52px,9vw,80px)] leading-[.9] tracking-[.01em]">
-          IT&rsquo;S A MATCH
+          {dict.ui.itsAMatch}
         </h2>
 
         <p key={tick} className="mt-3 h-6 text-[15px] font-medium text-white/80" aria-live="polite">
-          {punAt(tick)}
+          {punAt(tick, locale)}
         </p>
 
         <p className="mt-4 max-w-[440px] text-[14px] leading-relaxed text-white/60">
           @{profile.login} × @{mate.login} —{" "}
-          <span className="font-semibold text-white">{spark}% chemistry</span>.{" "}
-          {mate.name || mate.login} swiped back. See the full report and decide
-          together.
+          <span className="font-semibold text-white">{fmt(dict.ui.chemistryLabel, { spark })}</span>.{" "}
+          {fmt(dict.ui.swipedBack, { name: mate.name || mate.login })}
         </p>
 
         <a
@@ -111,14 +114,14 @@ export default function MatchOverlay({
           onClick={onClose}
           className="font-display gt-flame mt-6 inline-flex items-center gap-2 rounded-[14px] px-8 py-3 text-[18px] tracking-[.06em] text-white"
         >
-          SHARE THE MATCH
+          {dict.ui.shareTheMatch}
         </a>
         <button
           type="button"
           onClick={onClose}
           className="mt-3 cursor-pointer text-[13px] text-white/50 transition hover:text-white/80"
         >
-          keep browsing
+          {dict.ui.keepBrowsing}
         </button>
       </div>
 

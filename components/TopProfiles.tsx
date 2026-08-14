@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { BAKED_PROFILES } from "@/lib/swipe";
+import { bakedProfiles } from "@/lib/swipe";
 import { profileTheme } from "@/lib/dating/theme";
+import { useDict, useLocale } from "@/lib/i18n/client";
 
 // The home "TOP PROFILES" strip — the highest match scores from the baked
 // swipe crowd, as tappable mini-cards. Sorted once per render (the deck is
@@ -18,14 +19,16 @@ const AVATAR_FALLBACK =
   );
 
 export default function TopProfiles() {
-  const top = [...BAKED_PROFILES].sort((a, b) => b.match - a.match).slice(0, TOP_N);
+  const locale = useLocale();
+  const dict = useDict();
+  const top = [...bakedProfiles(locale)].sort((a, b) => b.match - a.match).slice(0, TOP_N);
 
   return (
     <section className="relative z-[2] mx-auto w-full max-w-[1180px] px-[clamp(22px,5vw,56px)] pb-[clamp(28px,5vw,52px)]">
       <div className="mb-[14px] flex items-center gap-[9px]">
         <span className="h-[2px] w-[16px] rounded-full bg-brand" />
         <h2 className="font-display text-[11px] font-bold tracking-[.22em] text-ink-faint">
-          TOP PROFILES
+          {dict.ui.topProfiles}
         </h2>
       </div>
       <div className="grid grid-cols-2 gap-[12px] max-[760px]:grid-cols-2 md:grid-cols-4">
@@ -65,9 +68,9 @@ export default function TopProfiles() {
                   className="font-display mt-[4px] inline-flex items-center gap-[5px] text-[14px] font-bold leading-none tracking-[.04em]"
                   style={{ color: t.accent }}
                 >
-                  {p.match}% MATCH
+                  {p.match}% {dict.ui.match}
                   <span className="text-[10px] font-bold tracking-[.16em] text-ink-mute">
-                    {p.tierLabel}
+                    {dict.tiers[p.tier]}
                   </span>
                 </span>
               </span>

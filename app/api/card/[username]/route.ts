@@ -1,6 +1,7 @@
 import { type GithubError } from "@/lib/github/client";
 import { checkScoutRateLimit, RATE_LIMIT_ERROR } from "@/lib/rateLimit";
 import { scoutProfile } from "@/lib/scout";
+import { detectLocale } from "@/lib/i18n/locale";
 import { recordScout } from "@/lib/analytics";
 import { after } from "next/server";
 
@@ -28,7 +29,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ username
   // scoutProfile handles the Redis cache and the tokenless sample fallback; here
   // we just record the scout after the response.
   try {
-    const profile = await scoutProfile(username);
+    const profile = await scoutProfile(username, detectLocale(req.headers.get("accept-language")));
     after(() => recordScout());
     return Response.json(profile, { headers: { "Cache-Control": CACHE_HIT } });
   } catch (e) {

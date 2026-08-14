@@ -1,5 +1,7 @@
 "use client";
 
+import { useDict } from "@/lib/i18n/client";
+
 // X / LinkedIn share buttons — the sharing half of the "spread the verdict"
 // loop. They open the network's share composer with the card link (score
 // embedded in the share text) pre-filled, so a scout becomes a challenge.
@@ -24,6 +26,7 @@ interface Props {
 }
 
 export default function SocialShare({ path, title, text, className }: Props) {
+  const dict = useDict();
   const absoluteUrl = () => new URL(path, window.location.href).href;
 
   const shareX = () => {
@@ -51,11 +54,11 @@ export default function SocialShare({ path, title, text, className }: Props) {
     <div className={`flex flex-wrap items-center justify-center gap-3 ${className ?? ""}`}>
       <button type="button" onClick={shareX} className={base} title={title}>
         {X_ICON}
-        SHARE ON X
+        {dict.ui.shareOnX}
       </button>
       <button type="button" onClick={shareLinkedIn} className={base} title={title}>
         {LINKEDIN_ICON}
-        SHARE ON LINKEDIN
+        {dict.ui.shareOnLinkedIn}
       </button>
     </div>
   );

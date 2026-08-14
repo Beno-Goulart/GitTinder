@@ -7,6 +7,8 @@ import { profileTheme, rgba } from "@/lib/dating/theme";
 import { logoSlugFor, languageLogoUrl } from "@/lib/github/languages";
 import { cardDisplayName } from "@/lib/text";
 import { CARD_CORNER_RADIUS, roundedCardMaskDataUri } from "@/lib/cardMask";
+import { useDict } from "@/lib/i18n/client";
+import { fmt } from "@/lib/i18n/dicts";
 
 // The live Tinder-style card — photo up top, bio + interests over a paper
 // plate at the bottom, the match score in a coral seal top-left, tier pill
@@ -41,6 +43,7 @@ function interestLogo(name: string): string | null {
 }
 
 function DatingCard({ profile }: { profile: CardProfile }) {
+  const dict = useDict();
   const t = profileTheme(profile);
   const displayName = cardDisplayName(profile.name || profile.login);
 
@@ -76,7 +79,7 @@ function DatingCard({ profile }: { profile: CardProfile }) {
 
   const metaBits = [
     profile.height,
-    `${profile.repos} repos`,
+    fmt(dict.ui.reposLabel, { n: profile.repos }),
     ...(profile.location ? [profile.location.split(",")[0].trim()] : []),
   ].join(" · ");
 
@@ -143,7 +146,7 @@ function DatingCard({ profile }: { profile: CardProfile }) {
             opacity: 0.92,
           }}
         >
-          MATCH
+          {dict.ui.match}
         </div>
       </div>
 
@@ -169,7 +172,7 @@ function DatingCard({ profile }: { profile: CardProfile }) {
           whiteSpace: "nowrap",
         }}
       >
-        {profile.tierLabel}
+        {dict.tiers[profile.tier]}
       </div>
 
       {/* name + age */}
@@ -190,7 +193,7 @@ function DatingCard({ profile }: { profile: CardProfile }) {
         </div>
         {profile.verified && (
           <span
-            title="Verified by stars, probably"
+            title={dict.ui.verifiedTitle}
             style={{ display: "flex", alignItems: "center", flex: "none", color: t.accent }}
           >
             <ShieldCheck size={22} strokeWidth={2.4} />

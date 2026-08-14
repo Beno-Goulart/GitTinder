@@ -1,7 +1,9 @@
 import { ImageResponse } from "next/og";
 import { loadCardFonts } from "@/lib/og/card";
 import { mascotDataUri } from "@/lib/og/mascot";
-import { SAMPLE_PROFILES } from "@/lib/github/samples";
+import { sampleProfiles } from "@/lib/github/samples";
+import { getLocale } from "@/lib/i18n/server";
+import { dicts, fmt } from "@/lib/i18n/dicts";
 
 // Branded preview for the home page / bare gittinder.com links. Next wires this
 // as the default og:image + twitter:image automatically (metadataBase is absolute).
@@ -13,8 +15,10 @@ export const contentType = "image/png";
 const ACCENT = "#ff4655";
 
 export default async function Image() {
+  const locale = await getLocale();
+  const dict = dicts[locale];
   const fonts = await loadCardFonts();
-  const top = [...SAMPLE_PROFILES].sort((a, b) => b.match - a.match)[0];
+  const top = [...sampleProfiles(locale)].sort((a, b) => b.match - a.match)[0];
   const mascot = mascotDataUri();
 
   return new ImageResponse(
@@ -48,14 +52,14 @@ export default async function Image() {
           GITHUB × TINDER
         </div>
         <div style={{ display: "flex", flexDirection: "column", marginTop: 26 }}>
-          <div style={{ display: "flex", fontSize: 118, fontWeight: 800, lineHeight: 0.92 }}>FIND YOUR</div>
+          <div style={{ display: "flex", fontSize: 118, fontWeight: 800, lineHeight: 0.92 }}>{dict.og.homeFindYour}</div>
           <div style={{ display: "flex", fontSize: 118, fontWeight: 800, lineHeight: 0.92 }}>
-            <span>MATCH</span>
+            <span>{dict.og.homeMatch}</span>
             <span style={{ color: ACCENT }}>.</span>
           </div>
           <div style={{ display: "flex", fontSize: 33, color: "#5d5468", marginTop: 26, maxWidth: 720, lineHeight: 1.3 }}>
-            One GitHub username. One dating profile. Rated 0–99 — bio, passions and a tier.
-            {top ? ` Highest match so far: ${top.name || top.login} at ${top.match}%.` : ""}
+            {dict.og.homeSub}
+            {top ? ` ${fmt(dict.og.homeTopMatch, { name: top.name || top.login, score: top.match })}` : ""}
           </div>
         </div>
 

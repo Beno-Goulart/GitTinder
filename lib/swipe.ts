@@ -1,5 +1,7 @@
-import { SAMPLE_LOGINS, SAMPLE_PROFILES } from "./github/samples";
-import type { CardProfile } from "./dating/types";
+import { SAMPLE_LOGINS, sampleProfiles } from "./github/samples";
+import { dicts, fmt } from "@/lib/i18n/dicts";
+import type { Locale } from "@/lib/i18n/locale";
+import type { CardProfile, Tier } from "./dating/types";
 
 // The "SURPRISE ME" pool — real, recognizable accounts so the home form's
 // random button always lands somewhere fun. The four showcase samples plus a
@@ -643,7 +645,50 @@ const BAKED: CardProfile[] = [
 
 // The samples close the deck — the top card (queue[length-1]) is seen first,
 // so a familiar face opens and the freshly scouted crowd follows.
-export const SWIPE_PROFILES: CardProfile[] = [...BAKED, ...SAMPLE_PROFILES];
+
+// --- Locale-aware decks ------------------------------------------------------
+// The baked cards are authored once in English and translated on the fly for
+// other locales: exact lines go through the dict's baked.lines map, the three
+// templated phrasings (language count / years shipped / love language) are
+// rebuilt from their templates, and the tier pill reads from dict.tiers. The
+// showcase samples re-build through buildProfile(..., { locale }) too, so the
+// whole deck — and its /vs pair cards — reads in the viewer's language.
+
+const SPEAK_N = /^I speak ([\d.]+) languages, fluently-ish\.$/;
+const SHIP_YEARS = /^(\d+) years on GitHub and still shipping — long-term material\.$/;
+const LOVE_LANG = /^(.+) is my love language\.$/;
+
+const translateBakedLine = (line: string, locale: Locale): string => {
+  const dict = dicts[locale];
+  const exact = dict.baked.lines[line as keyof typeof dict.baked.lines];
+  if (exact) return exact;
+  let m = line.match(SPEAK_N);
+  if (m) return fmt(dict.baked.speakN, { n: m[1] });
+  m = line.match(SHIP_YEARS);
+  if (m) return fmt(dict.baked.shipYears, { n: m[1] });
+  m = line.match(LOVE_LANG);
+  if (m) return fmt(dict.baked.loveLanguage, { lang: m[1] });
+  return line; // unknown line — keep as-is rather than invent a translation
+};
+
+const bakedCache = new Map<Locale, CardProfile[]>();
+
+export function bakedProfiles(locale: Locale = "en"): CardProfile[] {
+  const cached = bakedCache.get(locale);
+  if (cached) return cached;
+  const dict = dicts[locale];
+  const profiles = BAKED.map((p) => ({
+    ...p,
+    tierLabel: dict.tiers[p.tier as Tier],
+    bio: locale === "en" ? p.bio : p.bio.map((line) => translateBakedLine(line, locale)),
+  }));
+  bakedCache.set(locale, profiles);
+  return profiles;
+}
+
+export function swipeProfiles(locale: Locale = "en"): CardProfile[] {
+  return [...bakedProfiles(locale), ...sampleProfiles(locale)];
+}
 
 // Just the freshly scouted crowd — the ranking pool for the home "TOP
 // PROFILES" strip (the showcase samples already get their own fan deck).

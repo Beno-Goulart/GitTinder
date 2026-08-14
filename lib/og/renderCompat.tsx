@@ -2,6 +2,8 @@ import { ImageResponse } from "next/og";
 import { computeChemistry } from "@/lib/dating/compat";
 import { languageLogoUrl, logoSlugFor } from "@/lib/github/languages";
 import type { DatingProfile } from "@/lib/dating/types";
+import { dicts } from "@/lib/i18n/dicts";
+import type { Locale } from "@/lib/i18n/locale";
 import { loadCardFonts } from "./card";
 import { loadCardAssets } from "./renderCard";
 
@@ -23,6 +25,7 @@ function compatTree({
   avatarA,
   avatarB,
   logos,
+  locale,
 }: {
   a: DatingProfile;
   b: DatingProfile;
@@ -34,7 +37,9 @@ function compatTree({
   avatarA: string;
   avatarB: string;
   logos: (string | null)[];
+  locale: Locale;
 }) {
+  const dict = dicts[locale];
   return (
     <div
       style={{
@@ -78,7 +83,7 @@ function compatTree({
         }}
       >
         <span>GITHUB × TINDER</span>
-        <span style={{ color: "#a79cb4" }}>CHEMISTRY REPORT</span>
+        <span style={{ color: "#a79cb4" }}>{dict.ui.chemistryReport}</span>
       </div>
 
       {/* the two avatars + the seal */}
@@ -115,7 +120,7 @@ function compatTree({
           }}
         >
           <div style={{ fontFamily: "Bebas", fontSize: 74, lineHeight: 1 }}>{score}</div>
-          <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: 3, opacity: 0.9 }}>CHEMISTRY</div>
+          <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: 3, opacity: 0.9 }}>{dict.ui.chemistry}</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 210 }}>
@@ -168,7 +173,7 @@ function compatTree({
         }}
       >
         <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: 2, color: "#a79cb4" }}>
-          BOTH SPEAK
+          {dict.og.bothSpeak}
         </span>
         {sharedLanguages.length ? (
           sharedLanguages.slice(0, 4).map((lang, i) => (
@@ -194,15 +199,19 @@ function compatTree({
             </div>
           ))
         ) : (
-          <span style={{ fontSize: 17, fontWeight: 600, color: "#5d5468" }}>…nothing yet</span>
+          <span style={{ fontSize: 17, fontWeight: 600, color: "#5d5468" }}>{dict.og.nothingYet}</span>
         )}
       </div>
     </div>
   );
 }
 
-export async function renderCompatImage(a: DatingProfile, b: DatingProfile): Promise<ImageResponse> {
-  const chemistry = computeChemistry(a, b);
+export async function renderCompatImage(
+  a: DatingProfile,
+  b: DatingProfile,
+  locale: Locale = "en",
+): Promise<ImageResponse> {
+  const chemistry = computeChemistry(a, b, locale);
   const [assetsA, assetsB] = await Promise.all([
     loadCardAssets(a, EMBED_W),
     loadCardAssets(b, EMBED_W),
@@ -239,6 +248,7 @@ export async function renderCompatImage(a: DatingProfile, b: DatingProfile): Pro
       avatarA: assetsA.avatar,
       avatarB: assetsB.avatar,
       logos,
+      locale,
     }),
     {
       ...COMPAT_SIZE,

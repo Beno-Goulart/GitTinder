@@ -1,12 +1,16 @@
-// Round GitHub mark — links to the project's source. No "use client" needed:
-// it's a plain anchor, so it works from server-rendered pages too.
+"use client";
+
+import { useDict } from "@/lib/i18n/client";
+
+// Round GitHub mark — links to the project's source.
 export default function GitHubLink() {
+  const dict = useDict();
   return (
     <a
       href="https://github.com/benogoulart/GitTinder"
       target="_blank"
       rel="noreferrer"
-      aria-label="GitTinder source on GitHub"
+      aria-label={dict.ui.sourceAria}
       className="inline-flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border border-line bg-surface/60 text-ink-soft transition hover:border-brand hover:text-brand"
     >
       <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden>

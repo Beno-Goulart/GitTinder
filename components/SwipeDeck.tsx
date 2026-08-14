@@ -9,6 +9,8 @@ import {
 } from "react";
 import { Heart, X } from "lucide-react";
 import type { CardProfile } from "@/lib/dating/types";
+import { useDict } from "@/lib/i18n/client";
+import { fmt } from "@/lib/i18n/dicts";
 import DatingCard from "./DatingCard";
 
 // A single draggable card in the swipe deck. Drag right = like, left = nope;
@@ -31,6 +33,7 @@ const DeckCard = forwardRef<DeckCardHandle, CardProps>(function DeckCard(
   { profile, onDecision, onOpen },
   ref,
 ) {
+  const dict = useDict();
   const [drag, setDrag] = useState<{ x: number; y: number } | null>(null);
   const dragging = useRef(false);
   const start = useRef({ x: 0, y: 0 });
@@ -95,7 +98,7 @@ const DeckCard = forwardRef<DeckCardHandle, CardProps>(function DeckCard(
           }`}
           style={{ animation: "gt-pop .16s cubic-bezier(.16,1,.3,1) both" }}
         >
-          {like ? "LIKE" : "NOPE"}
+          {like ? dict.ui.like : dict.ui.nope}
         </div>
       )}
       <div
@@ -123,18 +126,23 @@ export default function SwipeDeck({
   onOpen: (login: string) => void;
   onSwipe?: (profile: CardProfile, like: boolean) => void;
 }) {
+  const dict = useDict();
   const [queue, setQueue] = useState(profiles);
   const [verdicts, setVerdicts] = useState<{ login: string; like: boolean }[]>([]);
   const topRef = useRef<DeckCardHandle | null>(null);
 
   if (queue.length === 0) {
+    const likes = verdicts.filter((v) => v.like).length;
     return (
       <div className="rounded-[18px] border border-line bg-surface/60 p-6 text-center text-[14px] text-ink-mute">
         {verdicts.length > 0 ? (
           <>
-            You rated {verdicts.length} {verdicts.length === 1 ? "profile" : "profiles"}{" "}
-            — {verdicts.filter((v) => v.like).length} like
-            {verdicts.filter((v) => v.like).length === 1 ? "" : "s"}.
+            {fmt(dict.ui.ratedSummary, {
+              count: verdicts.length,
+              profiles: verdicts.length === 1 ? dict.ui.profileOne : dict.ui.profileMany,
+              likes,
+              likesWord: likes === 1 ? dict.ui.likeOne : dict.ui.likeMany,
+            })}
             <div className="mt-2">
               <button
                 type="button"
@@ -144,12 +152,12 @@ export default function SwipeDeck({
                 }}
                 className="font-display cursor-pointer text-[13px] tracking-[.16em] text-brand hover:text-brand-deep"
               >
-                SHUFFLE AGAIN
+                {dict.ui.shuffleAgain}
               </button>
             </div>
           </>
         ) : (
-          "No profiles in the deck yet."
+          dict.ui.emptyDeck
         )}
       </div>
     );
@@ -175,7 +183,7 @@ export default function SwipeDeck({
         ))}
         {queue.length > 1 && (
           <div className="font-display absolute right-2 top-2 z-30 rounded-full bg-black/40 px-3 py-1 text-[12px] tracking-widest text-white/80">
-            {queue.length} LEFT
+            {fmt(dict.ui.left, { n: queue.length })}
           </div>
         )}
         <DeckCard
@@ -196,7 +204,7 @@ export default function SwipeDeck({
         <button
           type="button"
           onClick={() => topRef.current?.swipe(false)}
-          aria-label="Nope"
+          aria-label={dict.ui.nopeAria}
           className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#fb5c66]/70 text-[#fb5c66] transition hover:scale-110 hover:bg-[#fb5c66]/10 active:scale-95"
         >
           <X size={26} strokeWidth={2.6} />
@@ -204,7 +212,7 @@ export default function SwipeDeck({
         <button
           type="button"
           onClick={() => topRef.current?.swipe(true)}
-          aria-label="Like"
+          aria-label={dict.ui.likeAria}
           className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#34d87b]/70 text-[#34d87b] transition hover:scale-110 hover:bg-[#34d87b]/10 active:scale-95"
         >
           <Heart size={26} strokeWidth={2.6} className="fill-[#34d87b]" />

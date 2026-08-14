@@ -3,6 +3,8 @@
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { Check, Copy } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
+import { useDict } from "@/lib/i18n/client";
+import { fmt } from "@/lib/i18n/dicts";
 
 // A copyable HTML snippet for embedding a profile's GitTinder card anywhere —
 // an <img> pointing at gittinder.com/<user>.png (the Satori-rendered card PNG).
@@ -21,15 +23,16 @@ const subscribe = () => () => {};
 const getServerOrigin = () => "https://gittinder.com";
 
 export default function EmbedSnippet({ login, name }: Props) {
+  const dict = useDict();
   const [copied, setCopied] = useState(false);
   const origin = useSyncExternalStore(subscribe, () => window.location.origin, getServerOrigin);
   const dark = useTheme();
 
   const snippet = useMemo(() => {
-    const alt = `${name || login} — rated on GitTinder`;
+    const alt = fmt(dict.ui.ratedOn, { name: name || login });
     const theme = dark ? "?theme=dark" : "";
     return `<img src="${origin}/${encodeURIComponent(login)}.png${theme}" alt="${alt}" width="405" height="567" />`;
-  }, [login, name, origin, dark]);
+  }, [login, name, origin, dark, dict]);
 
   const copy = async () => {
     try {
@@ -45,7 +48,7 @@ export default function EmbedSnippet({ login, name }: Props) {
     <div className="overflow-hidden rounded-xl border border-line bg-surface/70">
       <div className="flex items-center justify-between gap-2 border-b border-line px-[12px] py-[8px]">
         <span className="font-mono text-[10.5px] font-semibold tracking-[.18em] text-ink-faint">
-          PUT A CARD ON IT
+          {dict.ui.putACardOnIt}
         </span>
         <button
           type="button"
@@ -54,7 +57,7 @@ export default function EmbedSnippet({ login, name }: Props) {
         >
           <span className="inline-flex items-center gap-[6px]">
             {copied ? <Check size={13} className="text-brand" aria-hidden /> : <Copy size={13} aria-hidden />}
-            {copied ? "COPIED" : "COPY"}
+            {copied ? dict.ui.copied : dict.ui.copy}
           </span>
         </button>
       </div>

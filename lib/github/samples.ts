@@ -1,5 +1,6 @@
 import { buildProfile } from "@/lib/dating/engine";
 import type { DatingProfile, Signals, YearBreakdown } from "@/lib/dating/types";
+import type { Locale } from "@/lib/i18n/locale";
 
 // Compact literals for the baked per-year history (real data, captured
 // 2026-07-21 alongside the other signals).
@@ -140,5 +141,19 @@ const RAW: Signals[] = [
   },
 ];
 
-export const SAMPLE_PROFILES: DatingProfile[] = RAW.map((s) => buildProfile(s));
+// The showcase samples are built from RAW in each locale on demand (memoised).
+// SAMPLE_PROFILES stays the EN build — the default used by tests and static
+// OG art; interactive surfaces call sampleProfiles(locale) instead.
+const samplesByLocale = new Map<Locale, DatingProfile[]>();
+
+export function sampleProfiles(locale: Locale = "en"): DatingProfile[] {
+  let profiles = samplesByLocale.get(locale);
+  if (!profiles) {
+    profiles = RAW.map((s) => buildProfile(s, { locale }));
+    samplesByLocale.set(locale, profiles);
+  }
+  return profiles;
+}
+
+export const SAMPLE_PROFILES: DatingProfile[] = sampleProfiles("en");
 export const SAMPLE_LOGINS = RAW.map((r) => r.login);

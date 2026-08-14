@@ -5,6 +5,8 @@ import { mascotDataUri } from "@/lib/og/mascot";
 import { cardDisplayName } from "@/lib/text";
 import { roundedCardMaskDataUri } from "@/lib/cardMask";
 import type { DatingProfile } from "@/lib/dating/types";
+import { dicts, fmt } from "@/lib/i18n/dicts";
+import type { Locale } from "@/lib/i18n/locale";
 import { loadCardFonts } from "./card";
 
 // Server-side re-creation of the in-app DatingCard (components/DatingCard.tsx),
@@ -108,7 +110,9 @@ export function cardTree(
   assets: CardAssets,
   w: number,
   theme: CardTheme = "light",
+  locale: Locale = "en",
 ) {
+  const dict = dicts[locale];
   const H = cardH(w);
   const cqw = (n: number) => (n / 100) * w;
   const t = profileTheme(profile);
@@ -116,7 +120,7 @@ export function cardTree(
   const displayName = cardDisplayName(profile.name || profile.login).toUpperCase();
   const metaBits = [
     profile.height,
-    `${profile.repos} repos`,
+    fmt(dict.ui.reposLabel, { n: profile.repos }),
     ...(profile.location ? [profile.location.split(",")[0].trim()] : []),
   ].join(" · ");
   const at = (left: number, top: number) => ({ position: "absolute" as const, left: `${left}%`, top: `${top}%` });
@@ -162,7 +166,7 @@ export function cardTree(
       >
         <div style={{ display: "flex", fontFamily: "Bebas", fontSize: cqw(7.4), lineHeight: 1, color: "#ffffff" }}>{profile.match}</div>
         <div style={{ fontFamily: "DINPro", fontWeight: 700, fontSize: cqw(2.2), letterSpacing: cqw(0.2), color: "#ffffff", opacity: 0.92 }}>
-          MATCH
+          {dict.ui.match}
         </div>
       </div>
 
@@ -249,9 +253,10 @@ export function cardTree(
 export async function renderCardImage(
   profile: DatingProfile,
   theme: CardTheme = "light",
+  locale: Locale = "en",
 ): Promise<ImageResponse> {
   const assets = await loadCardAssets(profile, EMBED_W);
-  return new ImageResponse(cardTree(profile, assets, EMBED_W, theme), {
+  return new ImageResponse(cardTree(profile, assets, EMBED_W, theme, locale), {
     width: EMBED_W,
     height: cardH(EMBED_W),
     fonts: await loadCardFonts(),

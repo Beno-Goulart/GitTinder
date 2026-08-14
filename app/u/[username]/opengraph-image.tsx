@@ -6,6 +6,9 @@ import { recordScout } from "@/lib/analytics";
 import { mascotDataUri } from "@/lib/og/mascot";
 import { renderCardImage, CARD_SIZE } from "@/lib/og/renderCard";
 import { loadCardFonts } from "@/lib/og/card";
+import { getLocale } from "@/lib/i18n/server";
+import { dicts } from "@/lib/i18n/dicts";
+import type { Locale } from "@/lib/i18n/locale";
 
 export const runtime = "nodejs";
 export const alt = "GitTinder dating profile";
@@ -20,17 +23,19 @@ const CACHE = { "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-wh
 // matched" unfurl at the same card size.
 export default async function Image({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
-  if (!(await checkScoutRateLimit()).allowed) return fallback(username);
+  const locale = await getLocale();
+  if (!(await checkScoutRateLimit()).allowed) return fallback(username, locale);
   try {
-    const profile = await scoutProfile(username);
+    const profile = await scoutProfile(username, locale);
     after(() => recordScout()); // count link unfurls; flushed after response
-    return await renderCardImage(profile);
+    return await renderCardImage(profile, "light", locale);
   } catch {
-    return fallback(username);
+    return fallback(username, locale);
   }
 }
 
-async function fallback(username: string) {
+async function fallback(username: string, locale: Locale) {
+  const dict = dicts[locale];
   const fonts = await loadCardFonts();
   const mascot = mascotDataUri();
   return new ImageResponse(
@@ -54,7 +59,7 @@ async function fallback(username: string) {
         {mascot && <img src={mascot} alt="" width={120} height={120} style={{ marginBottom: 16, opacity: 0.9 }} />}
         <div style={{ display: "flex", color: "#ff4655", fontSize: 26, fontWeight: 700, letterSpacing: 4 }}>GITHUB × TINDER</div>
         <div style={{ display: "flex", fontSize: 84, fontWeight: 700, marginTop: 20 }}>@{username}</div>
-        <div style={{ display: "flex", fontSize: 34, color: "#5d5468", marginTop: 18 }}>Get your GitHub matched, rated 0–99.</div>
+        <div style={{ display: "flex", fontSize: 34, color: "#5d5468", marginTop: 18 }}>{dict.og.getMatched}</div>
         <div style={{ display: "flex", fontSize: 30, color: "#ff4655", fontWeight: 700, marginTop: 26 }}>gittinder.com</div>
       </div>
     ),

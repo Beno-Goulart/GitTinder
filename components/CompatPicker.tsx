@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import UserSearchInput, { type UserSearchInputHandle } from "./UserSearchInput";
 import { SAMPLE_LOGINS } from "@/lib/github/samples";
+import { useDict } from "@/lib/i18n/client";
 
 // Two username-or-name fields -> push to /vs/a/b. Used on the /vs landing and
 // the "NEW PAIR" flow so you can start over from any page. Each field does the
@@ -13,6 +14,7 @@ import { SAMPLE_LOGINS } from "@/lib/github/samples";
 // name via the field's latest search round.
 export default function CompatPicker({ initial }: { initial?: string[] }) {
   const router = useRouter();
+  const dict = useDict();
   const [a, setA] = useState(initial?.[0] ?? "");
   const [b, setB] = useState(initial?.[1] ?? "");
   const aRef = useRef<UserSearchInputHandle>(null);
@@ -32,14 +34,14 @@ export default function CompatPicker({ initial }: { initial?: string[] }) {
         onSubmit={submit}
         className="mx-auto flex w-full max-w-[560px] flex-wrap items-center justify-center gap-[10px]"
       >
-        <UserSearchInput ref={aRef} value={a} onValueChange={setA} label="First GitHub username or name" placeholder="username one" />
+        <UserSearchInput ref={aRef} value={a} onValueChange={setA} label={dict.ui.firstUsername} placeholder={dict.ui.usernameOne} />
         <span className="font-display text-[20px] leading-none text-brand">×</span>
-        <UserSearchInput ref={bRef} value={b} onValueChange={setB} label="Second GitHub username or name" placeholder="username two" />
+        <UserSearchInput ref={bRef} value={b} onValueChange={setB} label={dict.ui.secondUsername} placeholder={dict.ui.usernameTwo} />
         <button
           type="submit"
           className="font-display gt-flame group flex h-14 items-center gap-2 rounded-[14px] px-7 text-[20px] tracking-[.06em] text-white"
         >
-          CHECK
+          {dict.ui.check}
           <ArrowRight
             size={19}
             strokeWidth={2.6}
@@ -49,7 +51,7 @@ export default function CompatPicker({ initial }: { initial?: string[] }) {
       </form>
 
       <div className="mt-[14px] flex flex-wrap items-center justify-center gap-x-[6px] gap-y-[6px] text-[13px] text-ink-mute">
-        <span>try</span>
+        <span>{dict.ui.try}</span>
         {SAMPLE_LOGINS.slice(0, 2).map((login, i) => (
           <span key={login}>
             {i > 0 && <span className="mx-[2px]">·</span>}
@@ -65,7 +67,7 @@ export default function CompatPicker({ initial }: { initial?: string[] }) {
             </button>
           </span>
         ))}
-        <span>…or any two usernames</span>
+        <span>{dict.ui.orAnyTwo}</span>
       </div>
     </div>
   );

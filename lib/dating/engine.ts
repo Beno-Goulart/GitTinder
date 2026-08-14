@@ -4,12 +4,14 @@ import {
   K,
   MATCH_WEIGHTS,
   TIER_ACCENT,
-  TRAIT_DESCRIPTIONS,
   TRAITS,
   VERIFIED,
   tierFor,
 } from "./constants";
 import { buildBio, buildTags, lookingFor, onlineState, profileSeed } from "./bio";
+import { dicts, fmt } from "@/lib/i18n/dicts";
+import type { Dictionary } from "@/lib/i18n/dicts";
+import type { Locale } from "@/lib/i18n/locale";
 import type { DatingProfile, Metric, Signals, Tier, TraitKey, TraitShape, Traits, Vibe } from "./types";
 
 const Lg = (x: number) => Math.log10(Math.max(0, x) + 1);
@@ -104,71 +106,46 @@ function legacyScore(s: Signals): number {
 // The vibe ("archetype") is read from the trait shape: a star spike scouts an
 // influencer, a review-heavy lean a reviewer; a strong, balanced shape scouts
 // "the catch". Each archetype has a few phrasings picked from the profile seed,
-// so the same account always reads the same blurb.
-const VIBES: Record<Vibe, { name: string; blurb: (s: Signals) => string }> = {
-  influencer: {
-    name: "The Influencer",
-    blurb: (s) =>
-      oneOf(profileSeed(s.login), 20, [
-        "Star power off the charts. Everyone swipes right on a repo with a blue checkmark.",
-        "The stars have spoken — and they said yes. A walking highlight reel.",
-        "Repos that trend, a name that travels. The algorithm blushes.",
-      ]),
-  },
-  butterfly: {
-    name: "The Social Butterfly",
-    blurb: (s) =>
-      oneOf(profileSeed(s.login), 21, [
-        `A network machine — ${s.prs_to_others} PRs and ${s.reviews} reviews this year, always in the thread.`,
-        `Threads everywhere — ${s.prs_to_others} PRs opened, ${s.reviews} reviews given. Everyone knows them.`,
-        `The comment section is their living room — ${s.reviews} reviews and ${s.prs_to_others} PRs this year.`,
-      ]),
-  },
-  polyglot: {
-    name: "The Polyglot",
-    blurb: (s) =>
-      oneOf(profileSeed(s.login), 22, [
-        `Speaks ${s.languages} languages and will absolutely notice your missing semicolon.`,
-        `${s.languages} languages under the belt — the romance ones included, allegedly.`,
-        `A stack for every occasion — ${s.languages} of them. Never bored, never boring.`,
-      ]),
-  },
-  longhauler: {
-    name: "The Long-Hauler",
-    blurb: (s) =>
-      oneOf(profileSeed(s.login), 23, [
-        `${s.active_years} years in and still shipping. Built to last — emotionally available by commit.`,
-        `${s.active_years} years, one account, zero ghosting. This one's in it for keeps.`,
-        `Marathon legs on a sprint world — ${s.active_years} active years and counting.`,
-      ]),
-  },
-  reviewer: {
-    name: "The Reviewer",
-    blurb: (s) =>
-      oneOf(profileSeed(s.login), 24, [
-        `Leaves thoughtful reviews and kind comments. A gentleman (of the codebase), ${s.reviews} this year.`,
-        `Kind in reviews, sharp in code — ${s.reviews} pull requests given the full treatment.`,
-        `Reads everything carefully and replies with care. ${s.reviews} reviews this year prove it.`,
-      ]),
-  },
-  warrior: {
-    name: "The Weekend Warrior",
-    blurb: (s) =>
-      oneOf(profileSeed(s.login), 25, [
-        `Always up for something — especially something at 2am. ${s.active_days_recent} days online this year.`,
-        `Weekends, weekdays, 2am — always somewhere shipping. ${s.active_days_recent} active days.`,
-        `That friend who's always around when it's go time. ${s.active_days_recent} days of it this year.`,
-      ]),
-  },
-  catch: {
-    name: "The Catch",
-    blurb: () =>
-      oneOf(profileSeed("__catch__"), 26, [
-        "Balanced, committed, and almost too good to be true. It's just the algorithm.",
-        "Good at everything, humble about most of it. The algorithm knows.",
-        "The full package, shipped and tested. Resists all edge cases.",
-      ]),
-  },
+// so the same account always reads the same blurb. All wording comes from the
+// locale dictionary (tokens interpolated before the seed-pick, so each phrasing
+// stays complete in the viewer's language).
+const VIBES = (dict: Dictionary): Record<Vibe, { name: string; blurb: (s: Signals) => string }> => {
+  const v = dict.copy.vibes;
+  return {
+    influencer: {
+      name: v.influencer.name,
+      blurb: (s) => oneOf(profileSeed(s.login), 20, v.influencer.blurbs),
+    },
+    butterfly: {
+      name: v.butterfly.name,
+      blurb: (s) =>
+        oneOf(profileSeed(s.login), 21, v.butterfly.blurbs.map((b) => fmt(b, { prs: s.prs_to_others, reviews: s.reviews }))),
+    },
+    polyglot: {
+      name: v.polyglot.name,
+      blurb: (s) =>
+        oneOf(profileSeed(s.login), 22, v.polyglot.blurbs.map((b) => fmt(b, { languages: s.languages }))),
+    },
+    longhauler: {
+      name: v.longhauler.name,
+      blurb: (s) =>
+        oneOf(profileSeed(s.login), 23, v.longhauler.blurbs.map((b) => fmt(b, { years: s.active_years }))),
+    },
+    reviewer: {
+      name: v.reviewer.name,
+      blurb: (s) =>
+        oneOf(profileSeed(s.login), 24, v.reviewer.blurbs.map((b) => fmt(b, { reviews: s.reviews }))),
+    },
+    warrior: {
+      name: v.warrior.name,
+      blurb: (s) =>
+        oneOf(profileSeed(s.login), 25, v.warrior.blurbs.map((b) => fmt(b, { days: s.active_days_recent }))),
+    },
+    catch: {
+      name: v.catch.name,
+      blurb: () => oneOf(profileSeed("__catch__"), 26, v.catch.blurbs),
+    },
+  };
 };
 
 // Each trait's archetype read — the top trait names the vibe, unless the shape
@@ -195,7 +172,7 @@ function metricScore(value: number): number {
   return clamp(Math.round(30 * Math.log10(value + 1)), 0, 99);
 }
 
-function buildMetrics(s: Signals): Metric[] {
+function buildMetrics(s: Signals, dict: Dictionary): Metric[] {
   const m = (
     label: string,
     value: number,
@@ -206,25 +183,43 @@ function buildMetrics(s: Signals): Metric[] {
     unit,
     score: metricScore(value),
   });
+  const units = dict.copy.metrics.units;
   return [
-    m("Followers", s.followers),
-    m("Stars", s.total_stars_owned, "stars"),
-    m("Commits this year", s.recent_commits, "commits"),
-    m("Pull requests", s.prs_to_others, "PRs"),
-    m("Reviews", s.reviews),
-    m("Languages", s.languages),
+    m(dict.copy.metrics.followers, s.followers),
+    m(dict.copy.metrics.stars, s.total_stars_owned, units.stars),
+    m(dict.copy.metrics.commitsThisYear, s.recent_commits, units.commits),
+    m(dict.copy.metrics.pullRequests, s.prs_to_others, units.prs),
+    m(dict.copy.metrics.reviews, s.reviews),
+    m(dict.copy.metrics.languages, s.languages),
   ];
 }
 
-export function buildProfile(s: Signals, now = Date.now()): DatingProfile {
+// One trait's plain-English report reason, per locale (report tooltips).
+const traitReasons = (dict: Dictionary) =>
+  TRAITS.reduce(
+    (acc, k) => {
+      acc[k] = dict.traits[k].desc;
+      return acc;
+    },
+    {} as Record<TraitKey, string>,
+  );
+
+export function buildProfile(
+  s: Signals,
+  opts: { now?: number; locale?: Locale } = {},
+): DatingProfile {
+  const locale = opts.locale ?? "en";
+  const now = opts.now ?? Date.now();
+  const dict = dicts[locale];
   const traits = spike(applyTension(zscore(rawTraits(s))), center(s));
   const base = TRAITS.reduce((sum, k) => sum + traits[k] * MATCH_WEIGHTS[k], 0);
   const L = legacyScore(s);
   const match = clamp(Math.round(base + K.legacy.bonusMax * L), 1, 99);
-  const { tier, label } = tierFor(match);
+  const { tier } = tierFor(match);
+  const vibes = VIBES(dict);
 
-  const { bio } = buildBio(s);
-  const tags = buildTags(s);
+  const { bio } = buildBio(s, locale);
+  const tags = buildTags(s, locale);
   const topTrait = [...TRAITS].sort((a, b) => traits[b] - traits[a])[0];
   const vibe = vibeFromShape(traits);
   const age = Math.max(0, Math.floor(s.account_age_years));
@@ -243,11 +238,11 @@ export function buildProfile(s: Signals, now = Date.now()): DatingProfile {
     repos: s.public_repos,
     match,
     tier,
-    tierLabel: label,
-    vibe: VIBES[vibe].name,
-    vibeBlurb: VIBES[vibe].blurb(s),
+    tierLabel: dict.tiers[tier],
+    vibe: vibes[vibe].name,
+    vibeBlurb: vibes[vibe].blurb(s),
     bio,
-    lookingFor: lookingFor(s, topTrait),
+    lookingFor: lookingFor(s, topTrait, locale),
     tags,
     stats: traits,
     topTrait,
@@ -255,9 +250,9 @@ export function buildProfile(s: Signals, now = Date.now()): DatingProfile {
     topLanguage: s.topLanguage ?? interests[0] ?? null,
     online: onlineState(s),
     verified: s.followers >= VERIFIED.minFollowers || s.total_stars_owned >= VERIFIED.minStars,
-    metrics: buildMetrics(s),
+    metrics: buildMetrics(s, dict),
     ...(s.years ? { years: s.years } : null),
-    report: { reasons: TRAIT_DESCRIPTIONS },
+    report: { reasons: traitReasons(dict) },
   };
 }
 
